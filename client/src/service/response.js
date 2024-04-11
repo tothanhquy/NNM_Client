@@ -13,7 +13,7 @@ class Response{
         return new Response("success",200,message,data);
     }
     static error(message="",statusCode=500){
-        return new Response("error",statusCode,message,statusCode);
+        return new Response("error",statusCode,message,{});
     }
 }
 export default Response;

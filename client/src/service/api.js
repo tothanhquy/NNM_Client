@@ -12,7 +12,7 @@ class API{
             .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
             .join('&');
           
-            let fetchResponse = fetch(`${URL}/${path}?${queryString}`, {
+            let fetchResponse = await fetch(`${URL}/${path}?${queryString}`, {
                 method: 'GET', // Phương thức HTTP
                 headers: {
                 'Content-Type': 'application/json', // Tiêu đề 'Content-Type'
@@ -44,7 +44,7 @@ class API{
                 }
             }
           
-            let fetchResponse = fetch(`${URL}/${path}`, {
+            let fetchResponse =  await fetch(`${URL}/${path}`, {
                 method: 'POST', // Phương thức HTTP
                 headers: {
                 'Authorization': JWT.get() // Tiêu đề 'Authorization'
