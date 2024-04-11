@@ -24,7 +24,9 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
-import ProductService from '../../../service/product.service';
+import DiscountService from '../../../service/discount.service';
+
+import * as GeneralMethod from '../../../common_method/general';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -90,10 +92,9 @@ TablePaginationActions.propTypes = {
 export default function CustomPaginationActionsTable() {
   const [dialog, setDialog] = React.useState({open:false,message:""});
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(7);
+  const [rowsPerPage, setRowsPerPage] = React.useState(6);
   const [rows, setRows] = React.useState([]);
   const [fixRows, setFixRows] = React.useState([]);
-  const [emptyRows, setEmptyRows] = React.useState(0);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
@@ -110,7 +111,7 @@ export default function CustomPaginationActionsTable() {
 
   React.useEffect(() => {
     //setRows(rowsInit);
-    ProductService.getAllProducts().then((res) => {
+    DiscountService.getAllDiscounts().then((res) => {
       if(res.status === 'success'){
         //convert
         console.log(res.data);
@@ -133,7 +134,8 @@ export default function CustomPaginationActionsTable() {
       filterRows=fixRows;
     }else{
       fixRows.forEach(row => {
-        if(row.name.toLowerCase().indexOf(search.toLowerCase())!== -1){
+        if(row.name.toLowerCase().indexOf(search.toLowerCase())!== -1
+      ||row.code.toLowerCase().indexOf(search.toLowerCase())!== -1){
           filterRows.push(row);
         }
       });
@@ -168,7 +170,7 @@ export default function CustomPaginationActionsTable() {
         </DialogContent>
       </Dialog>
       <box style={{display:'flex',flexDirection:'row'}}>
-        <Button size="small" variant="contained" href={"/admin/product/create"}>Tạo mới sản phẩm</Button>
+        <Button size="small" variant="contained" href={"/admin/discount/create"}>Tạo mới Discount</Button>
         <Box style={{margin:'10px 0 0 20px',display:'flex',flexDirection:'row',alignItems:'center'}} component="form" onSubmit={handleSearch}>
           <TextField size="small" 
           label="Search..."
@@ -185,9 +187,13 @@ export default function CustomPaginationActionsTable() {
       <TableHead>
           <TableRow>
             <TableCell>#</TableCell>
-            <TableCell >Tên sản phẩm</TableCell>
-            <TableCell >Ảnh</TableCell>
-            <TableCell >Size</TableCell>
+            <TableCell >CODE</TableCell>
+            <TableCell >Tên Discount</TableCell>
+            <TableCell >Sản phẩm</TableCell>
+            <TableCell >Bắt đầu</TableCell>
+            <TableCell >Kết thúc</TableCell>
+            <TableCell >Giảm %</TableCell>
+            <TableCell >Giảm tiền</TableCell>
             <TableCell align='center'>Action</TableCell>
           </TableRow>
         </TableHead>
@@ -201,21 +207,28 @@ export default function CustomPaginationActionsTable() {
                 {row.id}
               </TableCell>
               <TableCell >
+                {row.code}
+              </TableCell>
+              <TableCell >
                 {row.name}
               </TableCell>
-              <TableCell>
-                <img
-                  src={`${row.image}?w=164&h=164&fit=crop&auto=format`}
-                  alt={row.name}
-                  loading="lazy"
-                  style={{maxHeight:'100px'}}
-                />
+              <TableCell >
+                {row.productId}
+              </TableCell>
+              <TableCell >
+                {GeneralMethod.convertTimeToDate(row.startTime)}
+              </TableCell>
+              <TableCell >
+                {GeneralMethod.convertTimeToDate(row.endTime)}
               </TableCell>
               <TableCell>
-                {row.sizes}
+                {row.discountPercent===0?"":row.discountPercent}
+              </TableCell>
+              <TableCell>
+                {row.discountMoney===0?"":row.discountMoney}
               </TableCell>
               <TableCell style={{ width: 160 }} align='center'>
-                <Button href={"/admin/product/edit/"+row.id}>Edit</Button>
+                <Button href={"/admin/discount/edit/"+row.id}>Edit</Button>
               </TableCell>
             </TableRow>
           ))}
@@ -223,8 +236,8 @@ export default function CustomPaginationActionsTable() {
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[7, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={5}
+              rowsPerPageOptions={[6, 12, 25, { label: 'All', value: -1 }]}
+              colSpan={9}
               count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
