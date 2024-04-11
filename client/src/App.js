@@ -12,6 +12,9 @@ import AdminProductEdit from './view/admin/product/edit';
 import AdminDiscountList from './view/admin/discount/list';
 import AdminDiscountCreate from './view/admin/discount/create';
 import AdminDiscountEdit from './view/admin/discount/edit';
+import AdminTableList from './view/admin/table/list';
+import AdminTableCreate from './view/admin/table/create';
+import AdminTableEdit from './view/admin/table/edit';
 
 function App() {
   return (
@@ -26,7 +29,11 @@ function App() {
               <Route path="edit/:id" element={<AdminDiscountEdit/>} />
               <Route index element={<AdminDiscountList/>} />
             </Route>
-            {/* <Route path="table" element={<Table/>} /> */}
+            <Route path="table">
+              <Route path="create" element={<AdminTableCreate/>} />
+              <Route path="edit/:id" element={<AdminTableEdit/>} />
+              <Route index element={<AdminTableList/>} />
+            </Route>
             <Route  path="product">
               <Route path="create" element={<AdminProductCreate/>} />
               <Route path="edit/:id" element={<AdminProductEdit/>} />

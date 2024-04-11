@@ -16,7 +16,7 @@ import Dialog from '@mui/material/Dialog';
 import DiscountService from '../../../service/discount.service';
 
 import * as GeneralMethod from '../../../common_method/general';
-import * as CustomDialog from '../../../component/dialog';
+import * as CustomDialog from '../../component/dialog';
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();

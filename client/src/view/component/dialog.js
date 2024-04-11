@@ -9,16 +9,6 @@ import Button from '@mui/material/Button';
 
 Modal.setAppElement('#root');
 
-export function DeleteProductDialog({ productName, onDelete, onClose }){
-  return (
-    <Modal isOpen={true} onRequestClose={onClose}>
-      <h2>Xác nhận xóa sản phẩm</h2>
-      <p>Bạn có chắc chắn muốn xóa sản phẩm "{productName}"?</p>
-      <button onClick={onDelete}>Xác nhận</button>
-      <button onClick={onClose}>Hủy</button>
-    </Modal>
-  );
-};
 export function AskDialog({ open,title,content, onHandle, onClose }){
   return (
     <Dialog
@@ -45,3 +35,21 @@ export function AskDialog({ open,title,content, onHandle, onClose }){
   );
 };
 
+export function AlertDialog({message,onClose}) {
+  return(
+    <Dialog
+        open={true}
+        onClose={onClose}
+        aria-labelledby="draggable-dialog-title"
+      >
+        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+          Thông báo
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText style={{minWidth:'400px'}}>
+            {message}
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+  )
+}

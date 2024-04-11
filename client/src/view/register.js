@@ -12,10 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Alert from '@mui/material/Alert';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 import AuthService from '../service/auth.service';
-import Component from './component';
 
 const defaultTheme = createTheme();
 
@@ -95,7 +95,7 @@ export default function SignUp() {
             </Grid>
             {
               message &&
-              <Component.AlertBox status={message.status} message={message.content} />
+              <Alert severity={message.status}>{message.content}</Alert>
             }
             <Button
               type="submit"
