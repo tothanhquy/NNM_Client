@@ -1,21 +1,21 @@
 import API from "./api";
 import Response from "./response";
 
-function createData(id,name, floor, tableNumber) {
-    return { id,name, floor, tableNumber };
+function createData(id,name, floor, tableNumber,status) {
+    return { id,name, floor, tableNumber,status };
   }
 const rowsInit = [
-    createData(1,"table 1",1,1),
-    createData(2,"table 2",1,2),
-    createData(3,"table 3",1,3),
-    createData(4,"table 4",1,4),
-    createData(5,"table 5",2,5),
-    createData(6,"table 6",2,6),
-    createData(7,"table 7",2,7),
-    createData(8,"table 8",2,8),
-    createData(9,"table 9",3,9),
-    createData(10,"table 10",3,10),
-    createData(11,"table 11",3,11),
+    createData(1,"table 1",1,1,"open"),
+    createData(2,"table 2",1,2,"close"),
+    createData(3,"table 3",1,3,"open"),
+    createData(4,"table 4",1,4,"open"),
+    createData(5,"table 5",2,5,"close"),
+    createData(6,"table 6",2,6,"open"),
+    createData(7,"table 7",2,7,"close"),
+    createData(8,"table 8",2,8,"close"),
+    createData(9,"table 9",3,9,"close"),
+    createData(10,"table 10",3,10,"close"),
+    createData(11,"table 11",3,11,"close"),
 ];
 
 
@@ -68,7 +68,8 @@ class TableService{
         let body = {
             "status":status
         }
-        return await API.post(`${SERVICE_PATH}/updateStatusTable/${id}`,body);
+        return new Response("success",200,"",{});
+        // return await API.post(`${SERVICE_PATH}/updateStatusTable/${id}`,body);
     }
     //role: admin/staff
     static async  getAllTables(){

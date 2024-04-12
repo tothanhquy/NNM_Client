@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Login from './view/login';
 import Register from './view/register';
-import Staff from './view/staff';
 import Guest from './view/guest';
 
 import AdminDashboard from './view/admin/dashboard';
@@ -16,6 +15,9 @@ import AdminTableList from './view/admin/table/list';
 import AdminTableCreate from './view/admin/table/create';
 import AdminTableEdit from './view/admin/table/edit';
 import AdminUserList from './view/admin/user/list';
+
+import StaffLayout from './view/staff/layout';
+import StaffTableList from './view/staff/table/list';
 
 function App() {
   return (
@@ -45,8 +47,12 @@ function App() {
           <Route  path="dashboard" element={<AdminDashboard/>} />
           <Route index element={<AdminDashboard/>} />
         </Route>
-        <Route path="/staff" element={<Staff/>} />
-        <Route index  path="/" element={<Guest/>} />
+        <Route index path="/" element={<Guest/>} />
+        <Route  path="/staff" element={<StaffLayout/>}>
+          <Route exact path="table" >
+            <Route index element={<StaffTableList/>} />
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );
