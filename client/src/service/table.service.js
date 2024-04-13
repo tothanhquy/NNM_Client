@@ -27,14 +27,14 @@ class TableService{
             "floor":floor,
             "tableNumber":tableNumber
         }
-        return new Response("success", 200,"",{newId:3});
-        //return await API.post(`${SERVICE_PATH}/createTable`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/createTable`,body);
     }
     //role: admin
     static async  deleteTable(id){
         let body = {}
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/deleteTable/${id}`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/deleteTable/${id}`,body);
     }
     //role: admin
     static async  updateTable(id,name,floor,tableNumber){
@@ -43,38 +43,38 @@ class TableService{
             "floor":floor,
             "tableNumber":tableNumber
         }
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/updateTable/${id}`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/updateTable/${id}`,body);
     }
     //role: admin/staff
     static async  getTable(id){
-        // return await API.get(`${SERVICE_PATH}/getTable/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/getTable/${id}`,{});
 
-        let productRes=undefined;
-        rowsInit.forEach(product=>{
-            id=parseInt(id);
-            if(!productRes&&product.id===id){
-                productRes = product;
-            }
-        });
-        if(!productRes){
-            return new Response("error",100,"Table not found");
-        }else{
-            return new Response("success",200,"",productRes);
-        }
+        // let productRes=undefined;
+        // rowsInit.forEach(product=>{
+        //     id=parseInt(id);
+        //     if(!productRes&&product.id===id){
+        //         productRes = product;
+        //     }
+        // });
+        // if(!productRes){
+        //     return new Response("error",100,"Table not found");
+        // }else{
+        //     return new Response("success",200,"",productRes);
+        // }
     }
     //role: staff
     static async  updateStatusTable(id,status){
         let body = {
             "status":status
         }
-        return new Response("success",200,"",{});
-        // return await API.post(`${SERVICE_PATH}/updateStatusTable/${id}`,body);
+        // return new Response("success",200,"",{});
+        return await API.post(`${SERVICE_PATH}/updateStatusTable/${id}`,body);
     }
     //role: admin/staff
     static async  getAllTables(){
-        return new Response("success",200,"",rowsInit);
-        // return await API.get(`${SERVICE_PATH}/getAllTables`,{});
+        // return new Response("success",200,"",rowsInit);
+        return await API.get(`${SERVICE_PATH}/getAllTables`,{});
     }
 }
 export default TableService;

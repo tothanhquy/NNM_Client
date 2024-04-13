@@ -37,17 +37,21 @@ function Staff() {
     window.location.href = '/staff/' + key;
   };
 
-  const handleCloseUserMenu = async (e) => {
+  const handleCloseUserMenu = (e) => {
     setAnchorElUser(null);
-    const key = e.target.getAttribute;
-    if(key==="Logout"){
-        let res = await AuthService.logoutUser();
-        if(res.status === 'success'){
-            window.location.href = '/';
-        }else{
-            alert(res.message);
-        }
-    }
+    // const key = e.target.getAttribute("key-data");
+    // console.log(key);
+    // if(key==="Logout"){
+        AuthService.logoutUser()
+        .then(res=>{
+          if(res.status === 'success'){
+            window.location.href = '/login';
+          }else{
+              alert(res.message);
+          }
+        })
+        
+    // }
   };
 
   return (
@@ -99,7 +103,7 @@ function Staff() {
                 horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
+              // onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: 'block', md: 'none' },
               }}
@@ -166,7 +170,7 @@ function Staff() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key-data={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

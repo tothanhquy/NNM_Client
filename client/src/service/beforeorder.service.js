@@ -5,9 +5,9 @@ function createData(id,userId, time, status, tableNumber, isTakeAway, note, disc
     return { id,userId, time, status, tableNumber, isTakeAway, note, discountCode,products};
 }
 const beforeOrderDetails=[
-    {productId:8,beforeOrderId:1,size:"S",price:15000,number:1},
+    {productId:1,beforeOrderId:1,size:"L",price:25000,number:2},
     {productId:1,beforeOrderId:1,size:"S",price:15000,number:1},
-    {productId:5,beforeOrderId:1,size:"S",price:15000,number:1},
+    {productId:5,beforeOrderId:1,size:"S",price:15000,number:3},
     {productId:5,beforeOrderId:2,size:"S",price:15000,number:1},
     {productId:2,beforeOrderId:2,size:"S",price:15000,number:1},
     {productId:2,beforeOrderId:3,size:"S",price:15000,number:1},
@@ -59,24 +59,24 @@ class BeforeOrderService{
     }
     //role: staff
     static async getAllBeforeOrders(){//new to old
-        return new Response("success",200,"",rowsInit);
-        // return await API.get(`${SERVICE_PATH}/getAllBeforeOrders`,{});
+        // return new Response("success",200,"",rowsInit);
+        return await API.get(`${SERVICE_PATH}/getAllBeforeOrders`,{});
     }
     //role: staff/user
     static async getBeforeOrderDetails(id){
-        let productRes=undefined;
-        rowsInit.forEach(product=>{
-            id=parseInt(id);
-            if(!productRes&&product.id===id){
-                productRes = product;
-            }
-        });
-        if(!productRes){
-            return new Response("error",100,"Product not found");
-        }else{
-            return new Response("success",200,"",productRes);
-        }
-        // return await API.get(`${SERVICE_PATH}/getBeforeOrderDetails/${id}`,{});
+        // let productRes=undefined;
+        // rowsInit.forEach(product=>{
+        //     id=parseInt(id);
+        //     if(!productRes&&product.id===id){
+        //         productRes = product;
+        //     }
+        // });
+        // if(!productRes){
+        //     return new Response("error",100,"Before order not found");
+        // }else{
+        //     return new Response("success",200,"",productRes);
+        // }
+        return await API.get(`${SERVICE_PATH}/getBeforeOrderDetails/${id}`,{});
     }
     //role: user
     static async getBeforeOrdersOfUser(){
@@ -87,14 +87,14 @@ class BeforeOrderService{
         let body = {
             "status":status
         }
-        return new Response("success",200,"",{});
-        // return await API.post(`${SERVICE_PATH}/updateBeforeOrderStatus/${id}`,body);
+        // return new Response("success",200,"",{});
+        return await API.post(`${SERVICE_PATH}/updateBeforeOrderStatus/${id}`,body);
     }
     //role: staff
     static async convertOrder(id){//id of before order
-        return new Response("success",200,"",{});
+        // return new Response("success",200,"",{});
         //convert before order to order
-        // return await API.post(`${SERVICE_PATH}/convertOrder/${id}`,{});
+        return await API.post(`${SERVICE_PATH}/convertOrder/${id}`,{});
     }
 }
 export default BeforeOrderService;

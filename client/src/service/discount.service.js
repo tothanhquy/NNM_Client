@@ -37,34 +37,34 @@ class DiscountService{
             "endTime":endTime,
             "productId":productId
         }
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/createDiscount`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/createDiscount`,body);
     }
     //role: admin
     static async getAllDiscounts(){
-        return new Response("success",200,"",rowsInit);
-        // return await API.get(`${SERVICE_PATH}/getAllDiscounts`,{});
+        // return new Response("success",200,"",rowsInit);
+        return await API.get(`${SERVICE_PATH}/getAllDiscounts`,{});
     }
     //role: admin
     static async getDiscount(id){
-        let productRes=undefined;
-        rowsInit.forEach(product=>{
-            id=parseInt(id);
-            if(!productRes&&product.id===id){
-                productRes = product;
-            }
-        });
-        if(!productRes){
-            return new Response("error",100,"Discount not found");
-        }else{
-            return new Response("success",200,"",productRes);
-        }
-        //return await API.get(`${SERVICE_PATH}/getDiscount/${id}`,{});
+        // let productRes=undefined;
+        // rowsInit.forEach(product=>{
+        //     id=parseInt(id);
+        //     if(!productRes&&product.id===id){
+        //         productRes = product;
+        //     }
+        // });
+        // if(!productRes){
+        //     return new Response("error",100,"Discount not found");
+        // }else{
+        //     return new Response("success",200,"",productRes);
+        // }
+        return await API.get(`${SERVICE_PATH}/getDiscount/${id}`,{});
     }
     //role: admin
     static async deleteDiscount(id){
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/deleteDiscount/${id}`,{});
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/deleteDiscount/${id}`,{});
     }
     //role: admin
     static async updateDiscount(id,code,name, description, discountPercent, discountMoney,startTime,endTime,productId="1.5"){
@@ -78,8 +78,8 @@ class DiscountService{
             "endTime":endTime,
             "productId":productId
         }
-        return new Response("success", 200,"",{newId:3});
-        //return await API.post(`${SERVICE_PATH}/updateDiscount/${id}`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/updateDiscount/${id}`,body);
     }
     
     static async getDiscountsOfProductNow(id){

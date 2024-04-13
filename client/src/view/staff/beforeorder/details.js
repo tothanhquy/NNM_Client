@@ -61,6 +61,7 @@ export default function Edit() {
     let res = await BeforeOrderService.convertOrder(id);
     if(res.status === 'success'){
       setAlertDialog("Convert thành công");
+      setOpenConvertDialog(false)
     }else{
       setAlertDialog(res.message);
     }
@@ -120,7 +121,6 @@ export default function Edit() {
           <Box component="form" onSubmit={()=>{}} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Khách"
               name="user"
@@ -130,15 +130,15 @@ export default function Edit() {
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Thời điểm"
               name="time"
-              type="date"
+              type="datetime"
               value={beforePrderDetailsTime}
             />
-            <FormControl sx={{ m: 1, minWidth: 200 }} required>
-              <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel>
+            <FormControl sx={{ m: 1, minWidth: 200 }}>
+              <p>Trạng thái</p>
+              {/* <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel> */}
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -153,27 +153,22 @@ export default function Edit() {
             </FormControl>
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Số bàn"
               name="tableNumber"
               type="number"
               value={beforePrderDetailsTableNumber}
-              disabled
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Hình thức"
               name="isTakeAway"
               type="text"
               value={beforePrderDetailsIsTakeAway}
-              disabled
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Ghi chú"
               name="note"
@@ -181,16 +176,13 @@ export default function Edit() {
               multiline
               minRows="3"
               value={beforePrderDetailsNote}
-              disabled
             />
             <TextField
               margin="normal"
-              required
               fullWidth
               label="Mã giảm giá"
               name="discountCode"
               type="text"
-              disabled
               value={beforePrderDetailsDiscountCode}
             />
             {
@@ -198,8 +190,7 @@ export default function Edit() {
               <Alert severity={message.status}>{message.content}</Alert>
             }
             <Box style={{display:'flex',justifyContent: 'space-between', flexDirection:'row'}}>
-              <Button size="small" variant="outline" href={"/admin/table"}>Quay lại danh sách</Button>
-              <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>Sửa Table</Button>
+              <Button size="small" variant="outline" href={"/staff/before-roder"}>Quay lại danh sách</Button>
               {openConvertDialog&&
               <CustomDialog.AskDialog
                 open={openConvertDialog}
@@ -214,7 +205,6 @@ export default function Edit() {
                 type="button"
                 align="right"
                 variant="contained"
-                color="error"
                 sx={{ mt: 3, mb: 2 }}
               >
                 Convert 

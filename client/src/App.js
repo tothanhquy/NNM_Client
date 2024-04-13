@@ -20,6 +20,9 @@ import StaffLayout from './view/staff/layout';
 import StaffTableList from './view/staff/table/list';
 import StaffBeforeOrderList from './view/staff/beforeorder/list';
 import StaffBeforeOrderDetails from './view/staff/beforeorder/details';
+import StaffOrderList from './view/staff/order/list';
+import StaffOrderEdit from './view/staff/order/edit';
+import StaffOrderCreate from './view/staff/order/create';
 
 function App() {
   return (
@@ -31,7 +34,7 @@ function App() {
           <Route exact  path="user" >
             <Route index element={<AdminUserList/>} />
           </Route>
-          <Route path="discount" >
+          <Route path="discount" > 
             <Route path="create" element={<AdminDiscountCreate/>} />
             <Route path="edit/:id" element={<AdminDiscountEdit/>} />
             <Route index element={<AdminDiscountList/>} />
@@ -57,6 +60,11 @@ function App() {
           <Route exact path="before-order" >
             <Route index element={<StaffBeforeOrderList/>} />
             <Route path="details/:id" element={<StaffBeforeOrderDetails/>} />
+          </Route>
+          <Route exact path="order" >
+            <Route index element={<StaffOrderList/>} />
+            <Route path="edit/:id" element={<StaffOrderEdit/>} />
+            <Route path="create" element={<StaffOrderCreate/>} />
           </Route>
         </Route>
       </Routes>

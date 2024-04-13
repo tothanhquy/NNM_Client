@@ -11,6 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
@@ -54,7 +55,7 @@ function convertToProductView(orderDetails=[]){
     }else{
       let productView = createProductView();
       productView.productId = p.productId;
-      productView.name = p.productId;
+      productView.name = p.name;
       productView.sizeCount = p.number;
       productView.totalMoney = p.price*p.number;
       productView.sizes = [createProductSizeView(p.size,p.price,p.number)];
@@ -64,9 +65,12 @@ function convertToProductView(orderDetails=[]){
   return productViews;
 }
 
-function Row(props) {
-  const row = props.row;
+function Row({row,handleRemoveProduct}) {
   const [open, setOpen] = React.useState(false);
+
+  const handleDeleteProduct = function(e){
+    handleRemoveProduct(row.productId);
+  }
 
   return (
     <React.Fragment>
@@ -85,6 +89,9 @@ function Row(props) {
         </TableCell>
         <TableCell align="right">{row.sizeCount}</TableCell>
         <TableCell align="right">{row.totalMoney}</TableCell>
+        <TableCell align="right">
+          <Button sx={{ bgcolor: 'warning.main' }} size="small" variant="outline"  onClick={handleDeleteProduct} >Xóa</Button>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -143,7 +150,7 @@ function Row(props) {
 //   }).isRequired,
 // };
 
-export default function CollapsibleTable({orderDetails=[]}) {
+export default function CollapsibleTable({orderDetails=[],handleRemoveProduct}) {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -158,7 +165,7 @@ export default function CollapsibleTable({orderDetails=[]}) {
         <TableBody>
           {
           convertToProductView(orderDetails).map((row) => (
-            <Row key={row.productId} row={row} />
+            <Row key={row.productId} handleRemoveProduct={handleRemoveProduct} row={row} />
           ))}
         </TableBody>
       </Table>

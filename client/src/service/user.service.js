@@ -25,24 +25,24 @@ class UserService{
 
 
     static async getAllUsers(){
-        return new Response("success",200,"",rowsInit);
-        // return await API.get(`${SERVICE_PATH}/getAllUser`,{});
+        // return new Response("success",200,"",rowsInit);
+        return await API.get(`${SERVICE_PATH}/getAllUser`,{});
     }
     static async updateRole(id,role){
         let body = {
             "id":id,
             "role":role
         }
-        return new Response("success",200,"",{});
-        // return await API.post(`${SERVICE_PATH}/updateRole`,body);
+        // return new Response("success",200,"",{});
+        return await API.post(`${SERVICE_PATH}/updateRole`,body);
     }
     static async updateBan(id,isBan){
         let body = {
             "id":id,
             "isBan":isBan
         }
-        return new Response("success",200,"",{});
-        // return await API.post(`${SERVICE_PATH}/updateBan`,body);
+        // return new Response("success",200,"",{});
+        return await API.post(`${SERVICE_PATH}/updateBan`,body);
     }
     static async searchUsers(search, filter){//filter:"name/sdt"
         let params = {

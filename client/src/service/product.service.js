@@ -29,46 +29,46 @@ class ProductService{
             "image":image,
             "sizes":sizes
         }
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/createProduct`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/createProduct`,body);
     }
     //role: admin
     static async  deleteProduct(id){
         return await API.post(`${SERVICE_PATH}/deleteProduct/${id}`,{});
     }
     //role: admin
-    static async  updateProduct(id,name,description,image,sizes='S:0.M:0.L:0'){
+    static async  updateProduct(id,name,description,image,sizes='S:0;M:0;L:0'){
         let body = {
             "name":name,
             "description":description,
             "image":image,
             "sizes":sizes
         }
-        return new Response("success", 200,"",{newId:3});
-        // return await API.post(`${SERVICE_PATH}/updateProduct/${id}`,body);
+        // return new Response("success", 200,"",{newId:3});
+        return await API.post(`${SERVICE_PATH}/updateProduct/${id}`,body);
     }
     
     static async getProduct(id){
 
-        // return await API.get(`${SERVICE_PATH}/getProduct/${id}`,{});
-        let productRes=undefined;
-        rowsInit.forEach(product=>{
-            id=parseInt(id);
-            if(!productRes&&product.id===id){
-                productRes = product;
-            }
-        });
-        if(!productRes){
-            return new Response("error",100,"Product not found");
-        }else{
-            return new Response("success",200,"",productRes);
-        }
+        return await API.get(`${SERVICE_PATH}/getProduct/${id}`,{});
+        // let productRes=undefined;
+        // rowsInit.forEach(product=>{
+        //     id=parseInt(id);
+        //     if(!productRes&&product.id===id){
+        //         productRes = product;
+        //     }
+        // });
+        // if(!productRes){
+        //     return new Response("error",100,"Product not found");
+        // }else{
+        //     return new Response("success",200,"",productRes);
+        // }
     }
     
     static async  getAllProducts(){
-        return new Response("success",200,"",rowsInit);
+        // return new Response("success",200,"",rowsInit);
           
-        // return await API.get(`${SERVICE_PATH}/getAllProducts`,{});
+        return await API.get(`${SERVICE_PATH}/getAllProducts`,{});
     }
     static async  searchProducts(search){
         let params = {
