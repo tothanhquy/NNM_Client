@@ -18,6 +18,8 @@ import AdminUserList from './view/admin/user/list';
 
 import StaffLayout from './view/staff/layout';
 import StaffTableList from './view/staff/table/list';
+import StaffBeforeOrderList from './view/staff/beforeorder/list';
+import StaffBeforeOrderDetails from './view/staff/beforeorder/details';
 
 function App() {
   return (
@@ -51,6 +53,10 @@ function App() {
         <Route  path="/staff" element={<StaffLayout/>}>
           <Route exact path="table" >
             <Route index element={<StaffTableList/>} />
+          </Route>
+          <Route exact path="before-order" >
+            <Route index element={<StaffBeforeOrderList/>} />
+            <Route path="details/:id" element={<StaffBeforeOrderDetails/>} />
           </Route>
         </Route>
       </Routes>

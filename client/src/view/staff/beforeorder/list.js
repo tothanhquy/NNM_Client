@@ -23,8 +23,10 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Link from '@mui/material/Link';
 
-import UserService from '../../../service/user.service';
+import BeforeOrderService from '../../../service/beforeorder.service';
+import * as GeneralMethod from '../../../common_method/general';
 
 import * as CustomDialog from '../../component/dialog';
 
@@ -96,6 +98,10 @@ export default function CustomPaginationActionsTable() {
   const [rows, setRows] = React.useState([]);
   const [fixRows, setFixRows] = React.useState([]);
 
+  const [convertDialog, setConvertDialog] = React.useState(null);
+
+  const [sortType, setSortType] = React.useState("dec");
+
   // Avoid a layout jump when reaching the last page with empty rows.
   // const emptyRows =
   //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -109,55 +115,27 @@ export default function CustomPaginationActionsTable() {
     setPage(0);
   };
 
-  const changeRoleOfUser =function(id,role) {
-    UserService.updateRole(id,role).then((res) => {
+  const changeStatusOfBeforeOrder =function(id,status) {
+    BeforeOrderService.updateBeforeOrderStatus(id,status).then((res) => {
       if(res.status ==='success'){
-        setAlertDialog("Thay đổi role thành công");
-        updateRowByIdWithRole(id,role);
-      }else{
-        setAlertDialog(res.message);
-      }
-    });
-  }
-  const changeIsBanOfUser =function(id,isBan) {
-    UserService.updateBan(id,isBan).then((res) => {
-      if(res.status ==='success'){
-        if(isBan){
-          setAlertDialog("Khóa tài khoản thành công");
-        }else{
-          setAlertDialog("Mở khóa tài khoản thành công");
-        }
-        updateRowByIdWithIsBan(id,isBan);
+        setAlertDialog("Thay đổi trạng thái thành công");
+        updateRowByIdWithStatus(id,status);
       }else{
         setAlertDialog(res.message);
       }
     });
   }
 
-  const updateRowByIdWithRole = function(id, role){
+  const updateRowByIdWithStatus = function(id, status){
     setFixRows(fixRows.map(function(row){
       if(row.id === id){
-        row.role = role;
+        row.status = status;
       }
       return row;
     }));
     setRows(rows.map(function(row){
       if(row.id === id){
-        row.role = role;
-      }
-      return row;
-    }));
-  }
-  const updateRowByIdWithIsBan = function(id, isBan){
-    setFixRows(fixRows.map(function(row){
-      if(row.id === id){
-        row.isBan = isBan;
-      }
-      return row;
-    }));
-    setRows(rows.map(function(row){
-      if(row.id === id){
-        row.isBan = isBan;
+        row.status = status;
       }
       return row;
     }));
@@ -165,10 +143,16 @@ export default function CustomPaginationActionsTable() {
 
   React.useEffect(() => {
     //setRows(rowsInit);
-    UserService.getAllUsers().then((res) => {
+    BeforeOrderService.getAllBeforeOrders().then((res) => {
       if(res.status === 'success'){
         //convert
         console.log(res.data);
+        //sort
+        if(sortType==="inc"){
+          res.data.sort((a,b) =>a.time-b.time);
+        }else{
+          res.data.sort((b,a) =>a.time-b.time);
+        }
         setFixRows(res.data);
         renderRows(res.data);
       }else{
@@ -188,26 +172,42 @@ export default function CustomPaginationActionsTable() {
       filterRows=fixRows;
     }else{
       fixRows.forEach(row => {
-        if(row.name.toLowerCase().indexOf(search.toLowerCase())!== -1
-      ||row.sdt.toLowerCase().indexOf(search.toLowerCase())!== -1){
+        if((row.userId+"").toLowerCase().indexOf(search.toLowerCase())!==-1||row.id+""===search||row.tableNumber+""===search){
           filterRows.push(row);
         }
       });
+    }
+    if(sortType==="inc"){
+      filterRows.sort((a,b) =>a.time-b.time);
+    }else{
+      filterRows.sort((b,a) =>a.time-b.time);
     }
     renderRows(filterRows);
   }
-  const filterDataByRole = (role) => {
+  const filterDataByStatus = (status) => {
     let filterRows = [];
-    if(role==="all"){
+    if(status==="all"){
       filterRows=fixRows;
     }else{
       fixRows.forEach(row => {
-        if(row.role.toLowerCase()===role.toLowerCase()){
+        if(row.status.toLowerCase()===status.toLowerCase()){
           filterRows.push(row);
         }
       });
     }
+    if(sortType==="inc"){
+      filterRows.sort((a,b) =>a.time-b.time);
+    }else{
+      filterRows.sort((b,a) =>a.time-b.time);
+    }
     renderRows(filterRows);
+  }
+  const sortData = (type) => {
+    if(type==="inc"){
+      renderRows(rows.sort((a,b) =>a.time-b.time));
+    }else{
+      renderRows(rows.sort((b,a) =>a.time-b.time));
+    }
   }
 
   const handleSearch = (e) => {
@@ -219,10 +219,26 @@ export default function CustomPaginationActionsTable() {
 
     filterDataBySearch(search);
   }
-  const handleFilterRole = (e) => {
+  const handleFilterStatus = (e) => {
     e.preventDefault();
-    let role = e.target.value;
-    filterDataByRole(role);
+    let status = e.target.value;
+    filterDataByStatus(status);
+  }
+  const handleSortChange = (e) => {
+    e.preventDefault();
+    let type = e.target.value;
+    setSortType(type);
+    sortData(type);
+  }
+  const handleSubmitConvertOrder = (id)=>{
+    BeforeOrderService.convertOrder(id)
+    .then((res)=>{
+      if(res.status === 'success'){
+        setConvertDialog(null);
+      }else{
+        setAlertDialog(res.message);
+      }
+    });
   }
 
   return (
@@ -234,6 +250,15 @@ export default function CustomPaginationActionsTable() {
           onClose={() => setAlertDialog("")}
         />
         : null
+      }
+      {convertDialog!==null&&
+        <CustomDialog.AskDialog
+          open={true}
+          title="Xác nhận chuyển đổi thành đơn hàng"
+          content={"Bạn có chắc chắn muốn chuyển đơn với mã "+convertDialog+"?"}
+          onClose={()=>{setConvertDialog(null)}}
+          onHandle={()=> {handleSubmitConvertOrder(convertDialog)}}
+        />
       }
       
       <box style={{display:'flex',flexDirection:'row'}}>
@@ -248,27 +273,41 @@ export default function CustomPaginationActionsTable() {
           </IconButton>
         </Box>
           <FormControl sx={{ m: 1, minWidth: 200 }}>
-            <InputLabel id="demo-simple-select-label">Lọc tài khoản</InputLabel>
+            <InputLabel id="demo-simple-select-label">Hiển thị trạng thái</InputLabel>
             <Select size="medium"
-              label="Hiển thị tài khoản"
-              onChange={handleFilterRole}
+              label="Hiển thị trạng thái"
+              onChange={handleFilterStatus}
             >
               <MenuItem selected value={"all"}>Tất cả</MenuItem>
-              <MenuItem value={"user"}>Chỉ khách hàng</MenuItem>
-              <MenuItem value={"staff"}>Chỉ nhân viên</MenuItem>
+              <MenuItem value={"waiting"}>Chỉ đang đợi</MenuItem>
+              <MenuItem value={"handled"}>Chỉ đã xử lý</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ m: 1, minWidth: 200 }}>
+            <InputLabel id="demo-simple-select-label">Sắp xếp theo ngày</InputLabel>
+            <Select size="medium"
+              label="Sắp xếp theo ngày"
+              value={sortType}
+              onChange={handleSortChange}
+            >
+              <MenuItem value={"inc"}>Tăng dần</MenuItem>
+              <MenuItem value={"dec"}>Giảm dần</MenuItem>
             </Select>
           </FormControl>
       </box>
       
-      <Table sx={{ minWidth: 300 }} aria-label="custom pagination table">
+      <Table sx={{ minWidth: 300 }} aria-label="custom pagination beforeorder">
       <TableHead>
           <TableRow>
             <TableCell>#</TableCell>
-            <TableCell >Tên</TableCell>
-            <TableCell >Số điện thoại</TableCell>
-            <TableCell >Vai trò</TableCell>
-            <TableCell >Access</TableCell>
-            {/* <TableCell align='center'>Action</TableCell> */}
+            <TableCell >Khách</TableCell>
+            <TableCell >ngày</TableCell>
+            <TableCell >Trạng thái</TableCell>
+            <TableCell >Số bàn</TableCell>
+            <TableCell >Hình thức</TableCell>
+            <TableCell >Ghi chú</TableCell>
+            <TableCell >Mã giảm giá</TableCell>
+            <TableCell align='center'>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -278,65 +317,64 @@ export default function CustomPaginationActionsTable() {
           ).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                {row.id}
+                <Link href={`/staff/before-order/details/${row.id}`}>#{row.id}</Link>
               </TableCell>
               <TableCell >
-                {row.name}
+                {row.userId}
               </TableCell>
               <TableCell >
-                {row.sdt}
+                {GeneralMethod.convertTimeToDate(row.time)}
               </TableCell>
-              <TableCell >
-                <FormControl sx={{ m: 1, minWidth: 200 }} required>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Role"
-                    name="role"
-                    value={row.role}
-                    onChange={(e)=>{changeRoleOfUser(row.id,e.target.value)}}
-                  >
-                    <MenuItem value={"staff"}>Nhân viên</MenuItem>
-                    <MenuItem value={"user"}>Khách hàng</MenuItem>
-                  </Select>
-                </FormControl>
-              </TableCell>
+              
               <TableCell >
                 {
-                  row.isBan?
-                  <FormControl sx={{ bgcolor: 'error.main', m: 1, minWidth: 200 }} required>
+                  row.status==="waiting"?
+                  <FormControl sx={{ bgcolor: 'warning.main', m: 1, minWidth: 200 }} required>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    label="isBan"
-                    name="isBan"
-                    value={row.isBan}
-                    onChange={(e)=>{changeIsBanOfUser(row.id,e.target.value)}}
+                    label="status"
+                    value={row.status}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.id,e.target.value)}}
                   >
-                    <MenuItem value={true}>Disable</MenuItem>
-                    <MenuItem value={false}>Active</MenuItem>
+                    <MenuItem value={"waiting"}>Chờ</MenuItem>
+                    <MenuItem value={"preparing"}>Đang chuẩn bị</MenuItem>
+                    <MenuItem value={"completed"}>Đã hoàn thành</MenuItem>
                   </Select>
                 </FormControl>
-                    :
-                    <FormControl  sx={{ bgcolor: 'info.main',m: 1, minWidth: 200 }} required>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="isBan"
-                      name="isBan"
-                      value={row.isBan}
-                      onChange={(e)=>{changeIsBanOfUser(row.id,e.target.value)}}
-                    >
-                      <MenuItem value={true}>Disable</MenuItem>
-                      <MenuItem value={false}>Active</MenuItem>
-                    </Select>
-                  </FormControl>
+                :<FormControl sx={{ bgcolor: 'info.main', m: 1, minWidth: 200 }} required>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="status"
+                    value={row.status}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.id,e.target.value)}}
+                  >
+                    <MenuItem value={"waiting"}>Đang chờ</MenuItem>
+                    <MenuItem value={"handled"}>Đã xử lý</MenuItem>
+                  </Select>
+                </FormControl>
                 }
-                
               </TableCell>
-              {/* <TableCell style={{ width: 160 }} align='center'>
-                <Button href={"/admin/table/edit/"+row.id}>Edit</Button>
-              </TableCell> */}
+              <TableCell >
+                {row.tableNumber}
+              </TableCell>
+              <TableCell >
+                {row.isTakeAway?
+                <Button variant="contained">Mang đi</Button>
+                :
+                <Button variant="outlined">Tại chổ</Button>
+              }
+              </TableCell>
+              <TableCell >
+                {row.note}
+              </TableCell>
+              <TableCell >
+                {row.discountCode}
+              </TableCell>
+              <TableCell style={{ width: 160 }} align='center'>
+                <Button onClick={()=>{setConvertDialog(row.id)}} >Convert</Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -344,7 +382,7 @@ export default function CustomPaginationActionsTable() {
           <TableRow>
             <TablePagination
               rowsPerPageOptions={[6, 12, 25, { label: 'All', value: -1 }]}
-              colSpan={5}
+              colSpan={9}
               count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}

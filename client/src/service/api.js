@@ -1,7 +1,7 @@
 import Response from "./response";
 import JWT from "./jwt";
 
-const URL = "http://localhost";
+const URL = "http://localhost:8081/api";
 
 
 
@@ -12,24 +12,24 @@ class API{
             .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
             .join('&');
           
-            let fetchResponse = await fetch(`${URL}/${path}?${queryString}`, {
-                method: 'GET', // Phương thức HTTP
+            const requestOptions = {
+                method: "POST",
                 headers: {
-                'Content-Type': 'application/json', // Tiêu đề 'Content-Type'
-                'Authorization': JWT.get() // Tiêu đề 'Authorization'
-                // Bạn có thể thêm các tiêu đề khác tùy thuộc vào yêu cầu của API
-                }
-            })
+                    "Content-Type": "application/json",
+                    "Authorization": JWT.get()
+                  },
+                redirect: "follow"
+            };
 
-            if (!fetchResponse.ok){
-                throw new Error('Network response was not ok');
-            }
-            let responseJson = await fetchResponse.json();
-
-            let response = JSON.parse(responseJson);
-            
+            const responseFetch = await fetch(`${URL}${path}?${queryString}`, requestOptions);
+            const text = await responseFetch.text();
+            console.log(text);
+            const response = JSON.parse(text);
+            console.log(response);
+                
             return new Response(response.status,response.statusCode,response.message,response.data);
         }catch(err){
+            console.log(err);
             return Response.error("Lỗi hệ thống",500);
         }
     }
@@ -43,27 +43,28 @@ class API{
                     formData.append(key, body[key]);
                 }
             }
-          
-            let fetchResponse =  await fetch(`${URL}/${path}`, {
-                method: 'POST', // Phương thức HTTP
+            const requestOptions = {
+                method: "POST",
+                body: formData,
                 headers: {
-                'Authorization': JWT.get() // Tiêu đề 'Authorization'
-                // Bạn có thể thêm các tiêu đề khác tùy thuộc vào yêu cầu của API
-                },
-                body: formData
-            })
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": JWT.get()
+                  },
+                redirect: "follow"
+            };
 
-            if (!fetchResponse.ok){
-                throw new Error('Network response was not ok');
-            }
-            let responseJson = await fetchResponse.json();
-
-            let response = JSON.parse(responseJson);
-            
+            const responseFetch = await fetch(`${URL}${path}`, requestOptions);
+            const text = await responseFetch.text();
+            console.log(text);
+            const response = JSON.parse(text);
+            console.log(response);
+                
             return new Response(response.status,response.statusCode,response.message,response.data);
         }catch(err){
+            console.log(err);
             return Response.error("Lỗi hệ thống",500);
         }
+        
     }
 
 }
