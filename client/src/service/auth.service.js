@@ -34,5 +34,10 @@ class AuthService{
         // return new Response("success",200,"",{role:"admin"});
         return await API.post(`${SERVICE_PATH}/logout`,body);
     }
+    static async checkLogin(){
+        let body = {}
+        // return new Response("success",200,"",{role:"admin"});
+        return await API.post(`${SERVICE_PATH}/checkLogin`,body);
+    }
 }
 export default AuthService;

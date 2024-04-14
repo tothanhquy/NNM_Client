@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import Login from './view/login';
 import Register from './view/register';
-import Guest from './view/guest';
 
 import AdminDashboard from './view/admin/dashboard';
 import AdminLayout from './view/admin/layout';
@@ -23,6 +22,9 @@ import StaffBeforeOrderDetails from './view/staff/beforeorder/details';
 import StaffOrderList from './view/staff/order/list';
 import StaffOrderEdit from './view/staff/order/edit';
 import StaffOrderCreate from './view/staff/order/create';
+
+import Home from './view/guest/home';
+import Cart from './view/guest/cart';
 
 function App() {
   return (
@@ -52,7 +54,6 @@ function App() {
           <Route  path="dashboard" element={<AdminDashboard/>} />
           <Route index element={<AdminDashboard/>} />
         </Route>
-        <Route index path="/" element={<Guest/>} />
         <Route  path="/staff" element={<StaffLayout/>}>
           <Route exact path="table" >
             <Route index element={<StaffTableList/>} />
@@ -66,6 +67,10 @@ function App() {
             <Route path="edit/:id" element={<StaffOrderEdit/>} />
             <Route path="create" element={<StaffOrderCreate/>} />
           </Route>
+        </Route>
+        <Route path="/">
+          <Route index element={<Home/>} />
+          <Route path="cart" element={<Cart/>} />
         </Route>
       </Routes>
     </BrowserRouter>
