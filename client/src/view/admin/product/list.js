@@ -25,6 +25,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
 import ProductService from '../../../service/product.service';
+import API from '../../../service/api';
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -198,14 +199,14 @@ export default function CustomPaginationActionsTable() {
           ).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                {row.id}
+                {row.productId}
               </TableCell>
               <TableCell >
                 {row.name}
               </TableCell>
               <TableCell>
                 <img
-                  src={`${row.image}?w=164&h=164&fit=crop&auto=format`}
+                  src={`${API.IMAGE_URL}/${row.img}`}
                   alt={row.name}
                   loading="lazy"
                   style={{maxHeight:'100px'}}
@@ -215,7 +216,7 @@ export default function CustomPaginationActionsTable() {
                 {row.sizes}
               </TableCell>
               <TableCell style={{ width: 160 }} align='center'>
-                <Button href={"/admin/product/edit/"+row.id}>Edit</Button>
+                <Button href={"/admin/product/edit/"+row.productId}>Edit</Button>
               </TableCell>
             </TableRow>
           ))}

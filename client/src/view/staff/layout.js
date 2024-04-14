@@ -44,11 +44,11 @@ function Staff() {
     // if(key==="Logout"){
         AuthService.logoutUser()
         .then(res=>{
-          if(res.status === 'success'){
+          // if(res.status === 'success'){
             window.location.href = '/login';
-          }else{
-              alert(res.message);
-          }
+          // }else{
+          //     alert(res.message);
+          // }
         })
         
     // }

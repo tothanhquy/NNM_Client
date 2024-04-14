@@ -60,8 +60,8 @@ export default function Create() {
 
     let res = await ProductService.createProduct(name,description,image,sizes);
     if(res.status === 'success'){
-      let newId = res.data.newId;
-        window.location.href = '/admin/products/edit/' + newId;
+      let newId = res.data.productId;
+        window.location.href = '/admin/product/edit/' + newId;
       // setMessage({status: "success", content:"res.message"});
     }else{
       setMessage({status: "warning", content:res.message});

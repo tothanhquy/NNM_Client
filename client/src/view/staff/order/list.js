@@ -125,10 +125,12 @@ export default function CustomPaginationActionsTable() {
         setAlertDialog(res.message);
       }
     });
+    setCancelDialog(null);
   }
   const changeStatusOfOrder =function(id,status) {
     if(status==="canceled"){
-      changeStatusOfOrderSubmit(id,status);
+      // changeStatusOfOrderSubmit(id,status);
+      setCancelDialog({id:id,status:status});
     }else{
       changeStatusOfOrderSubmit(id,status);
     }
@@ -136,13 +138,13 @@ export default function CustomPaginationActionsTable() {
 
   const updateRowByIdWithStatus = function(id, status){
     setFixRows(fixRows.map(function(row){
-      if(row.id === id){
+      if(row.orderId === id){
         row.status = status;
       }
       return row;
     }));
     setRows(rows.map(function(row){
-      if(row.id === id){
+      if(row.orderId === id){
         row.status = status;
       }
       return row;
@@ -259,7 +261,7 @@ export default function CustomPaginationActionsTable() {
           title="Xác nhận hủy đơn hàng"
           content={"Bạn có chắc chắn muốn hủy đơn với mã "+cancelDialog.id+"?"}
           onClose={()=>{setCancelDialog(null)}}
-          onHandle={()=> {changeStatusOfOrder(cancelDialog.id,cancelDialog.status)}}
+          onHandle={()=> {changeStatusOfOrderSubmit(cancelDialog.id,cancelDialog.status)}}
         />
       }
       
@@ -325,7 +327,7 @@ export default function CustomPaginationActionsTable() {
           ).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                <Link href={`/staff/order/edit/${row.id}`}>#{row.id}</Link>
+                <Link href={`/staff/order/edit/${row.orderId}`}>#{row.orderId}</Link>
               </TableCell>
               <TableCell >
                 {row.userId}
@@ -356,7 +358,7 @@ export default function CustomPaginationActionsTable() {
                   id="demo-simple-select"
                   label="status"
                   value={row.status}
-                  onChange={(e)=>{changeStatusOfOrder(row.id,e.target.value)}}
+                  onChange={(e)=>{changeStatusOfOrder(row.orderId,e.target.value)}}
                 >
                   <MenuItem value={"canceled"}>Đã hủy</MenuItem>
                   <MenuItem value={"closed"}>Đã hoàn thành</MenuItem>
@@ -373,7 +375,7 @@ export default function CustomPaginationActionsTable() {
                     id="demo-simple-select"
                     label="status"
                     value={row.status}
-                    onChange={(e)=>{changeStatusOfOrder(row.id,e.target.value)}}
+                    onChange={(e)=>{changeStatusOfOrder(row.orderId,e.target.value)}}
                   >
                     <MenuItem value={"waiting"}>Chờ</MenuItem>
                     <MenuItem value={"preparing"}>Đang chuẩn bị</MenuItem>
@@ -386,7 +388,7 @@ export default function CustomPaginationActionsTable() {
                 }
               </TableCell>
               <TableCell >
-                {row.isTakeAway?
+                {row.isTakeAway==="yes"?
                 <Button variant="contained">Mang đi</Button>
                 :
                 <Button variant="outlined">Tại chổ</Button>

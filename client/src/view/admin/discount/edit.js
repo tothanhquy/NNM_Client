@@ -55,6 +55,7 @@ export default function Edit() {
     let startTimestamp = GeneralMethod.convertDateInputToTimestamp(startTimeAsDate);
     let endTimestamp = GeneralMethod.convertDateInputToTimestamp(endTimeAsDate);
 
+
     if(!startTimestamp||!endTimestamp){
       setMessage({status: "warning", content:"Thời gian không đúng định dạng"});
       return;
@@ -65,10 +66,10 @@ export default function Edit() {
       return;
     }
 
-    DiscountService.updateDiscount(discountId,name,code, description,  discountPercent, discountMoney, startTime, endTime, productId)
+    DiscountService.updateDiscount(discountId,name,code, description,  discountPercent, discountMoney, startTimestamp, endTimestamp, productId)
     .then(res=>{
       if(res.status === 'success'){
-        setMessage({status: "success", content:"Cập nhật sản phẩm thành công"});
+        setMessage({status: "success", content:"Cập nhật Discount thành công"});
       }else{
         setMessage({status: "warning", content:res.message});
       }

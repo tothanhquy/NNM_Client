@@ -33,7 +33,7 @@ export default function Create() {
     TableService.createTable(name,floor,tableNumber)
     .then(res=>{
       if(res.status === 'success'){
-        let newId = res.data.newId;
+        let newId = res.data.id;
           window.location.href = '/admin/table/edit/' + newId;
         // setMessage({status: "success", content:"res.message"});
       }else{
@@ -87,6 +87,7 @@ export default function Create() {
                 id="demo-simple-select"
                 label="Số tầng"
                 name="floor"
+                defaultValue={1}
               >
                 <MenuItem value={1}>Tầng 1</MenuItem>
                 <MenuItem value={2}>Tầng 2</MenuItem>

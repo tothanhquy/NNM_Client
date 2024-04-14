@@ -112,8 +112,8 @@ export default function CustomPaginationActionsTable() {
   const changeRoleOfUser =function(id,role) {
     UserService.updateRole(id,role).then((res) => {
       if(res.status ==='success'){
-        setAlertDialog("Thay đổi role thành công");
         updateRowByIdWithRole(id,role);
+        setAlertDialog("Thay đổi role thành công");
       }else{
         setAlertDialog(res.message);
       }
@@ -122,7 +122,7 @@ export default function CustomPaginationActionsTable() {
   const changeIsBanOfUser =function(id,isBan) {
     UserService.updateBan(id,isBan).then((res) => {
       if(res.status ==='success'){
-        if(isBan){
+        if(isBan==="yes"){
           setAlertDialog("Khóa tài khoản thành công");
         }else{
           setAlertDialog("Mở khóa tài khoản thành công");
@@ -303,7 +303,7 @@ export default function CustomPaginationActionsTable() {
               </TableCell>
               <TableCell >
                 {
-                  row.isBan?
+                  row.isBan==="yes"?
                   <FormControl sx={{ bgcolor: 'error.main', m: 1, minWidth: 200 }} required>
                   <Select
                     labelId="demo-simple-select-label"
@@ -313,8 +313,8 @@ export default function CustomPaginationActionsTable() {
                     value={row.isBan}
                     onChange={(e)=>{changeIsBanOfUser(row.id,e.target.value)}}
                   >
-                    <MenuItem value={true}>Disable</MenuItem>
-                    <MenuItem value={false}>Active</MenuItem>
+                    <MenuItem value={"yes"}>Disable</MenuItem>
+                    <MenuItem value={"no"}>Active</MenuItem>
                   </Select>
                 </FormControl>
                     :
@@ -327,8 +327,8 @@ export default function CustomPaginationActionsTable() {
                       value={row.isBan}
                       onChange={(e)=>{changeIsBanOfUser(row.id,e.target.value)}}
                     >
-                      <MenuItem value={true}>Disable</MenuItem>
-                      <MenuItem value={false}>Active</MenuItem>
+                      <MenuItem value={"yes"}>Disable</MenuItem>
+                      <MenuItem value={"no"}>Active</MenuItem>
                     </Select>
                   </FormControl>
                 }

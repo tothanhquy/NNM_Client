@@ -19,22 +19,23 @@ const rowsInit = [
 ];
 
 
-const SERVICE_PATH = "/table"
+const SERVICE_PATH = "/tables"
 class TableService{
     static async  createTable(name,floor,tableNumber){
         let body = {
             "name":name,
             "floor":floor,
-            "tableNumber":tableNumber
+            "tableNumber":tableNumber,
+            "status":"close"
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/createTable`,body);
+        return await API.post(`${SERVICE_PATH}`,body);
     }
     //role: admin
     static async  deleteTable(id){
         let body = {}
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/deleteTable/${id}`,body);
+        return await API.delete(`${SERVICE_PATH}/${id}`,body);
     }
     //role: admin
     static async  updateTable(id,name,floor,tableNumber){
@@ -48,7 +49,7 @@ class TableService{
     }
     //role: admin/staff
     static async  getTable(id){
-        return await API.get(`${SERVICE_PATH}/getTable/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/${id}`,{});
 
         // let productRes=undefined;
         // rowsInit.forEach(product=>{
@@ -69,12 +70,12 @@ class TableService{
             "status":status
         }
         // return new Response("success",200,"",{});
-        return await API.post(`${SERVICE_PATH}/updateStatusTable/${id}`,body);
+        return await API.post(`${SERVICE_PATH}/updateStatusTables/${id}`,body);
     }
     //role: admin/staff
     static async  getAllTables(){
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}/getAllTables`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
 }
 export default TableService;

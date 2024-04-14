@@ -1,7 +1,7 @@
 import API from "./api";
 import Response from "./response";
 
-const SERVICE_PATH = "/product";
+const SERVICE_PATH = "/products";
 
 
 
@@ -26,31 +26,31 @@ class ProductService{
         let body = {
             "name":name,
             "description":description,
-            "image":image,
+            "img":image,
             "sizes":sizes
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/createProduct`,body);
+        return await API.post(`${SERVICE_PATH}`,body);
     }
     //role: admin
     static async  deleteProduct(id){
-        return await API.post(`${SERVICE_PATH}/deleteProduct/${id}`,{});
+        return await API.delete(`${SERVICE_PATH}/${id}`,{});
     }
     //role: admin
     static async  updateProduct(id,name,description,image,sizes='S:0;M:0;L:0'){
         let body = {
             "name":name,
             "description":description,
-            "image":image,
+            "img":image,
             "sizes":sizes
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/updateProduct/${id}`,body);
+        return await API.post(`${SERVICE_PATH}/${id}`,body);
     }
     
     static async getProduct(id){
 
-        return await API.get(`${SERVICE_PATH}/getProduct/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/${id}`,{});
         // let productRes=undefined;
         // rowsInit.forEach(product=>{
         //     id=parseInt(id);
@@ -68,7 +68,7 @@ class ProductService{
     static async  getAllProducts(){
         // return new Response("success",200,"",rowsInit);
           
-        return await API.get(`${SERVICE_PATH}/getAllProducts`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
     static async  searchProducts(search){
         let params = {

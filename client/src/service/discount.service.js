@@ -24,7 +24,7 @@ const rowsInit = [
 ];
 
 
-const SERVICE_PATH = "/discount"
+const SERVICE_PATH = "/discounts"
 class DiscountService{
     static async createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productId="1.4"){
         let body = {
@@ -38,12 +38,12 @@ class DiscountService{
             "productId":productId
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/createDiscount`,body);
+        return await API.post(`${SERVICE_PATH}`,body);
     }
     //role: admin
     static async getAllDiscounts(){
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}/getAllDiscounts`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
     //role: admin
     static async getDiscount(id){
@@ -59,12 +59,12 @@ class DiscountService{
         // }else{
         //     return new Response("success",200,"",productRes);
         // }
-        return await API.get(`${SERVICE_PATH}/getDiscount/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/${id}`,{});
     }
     //role: admin
     static async deleteDiscount(id){
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/deleteDiscount/${id}`,{});
+        return await API.delete(`${SERVICE_PATH}/${id}`,{});
     }
     //role: admin
     static async updateDiscount(id,code,name, description, discountPercent, discountMoney,startTime,endTime,productId="1.5"){

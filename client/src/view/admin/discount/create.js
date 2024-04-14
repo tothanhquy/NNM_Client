@@ -47,7 +47,7 @@ export default function Create() {
     DiscountService.createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productId)
     .then(res=>{
       if(res.status === 'success'){
-        let newId = res.data.newId;
+        let newId = res.data.id;
           window.location.href = '/admin/discount/edit/' + newId;
         // setMessage({status: "success", content:"res.message"});
       }else{
@@ -108,9 +108,9 @@ export default function Create() {
               name="discountPercent"
               label="% giảm giá"
               type="number"
-              min="0"
-              max="100"
-              value="0"
+              min={0}
+              max={100}
+              defaultValue={0}
             />
             <TextField
               margin="normal"
@@ -119,9 +119,9 @@ export default function Create() {
               name="discountMoney"
               label="tiền giảm giá"
               type="number"
-              step="1"
-              min="0"
-              value="0"
+              step='1'
+              min={0}
+              defaultValue={0}
             />
             <TextField
               margin="normal"

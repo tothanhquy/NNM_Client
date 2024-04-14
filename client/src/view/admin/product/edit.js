@@ -19,6 +19,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 
 import ProductService from '../../../service/product.service';
+import API from '../../../service/api';
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
@@ -53,6 +54,7 @@ export default function Edit() {
 
   const [name, setName] = React.useState("");
   const [sizes, setSizes] = React.useState("");
+  const [image, setImage] = React.useState("");
   const [description, setDescription] = React.useState("");
   const imageRef = React.useRef(null);
 
@@ -85,8 +87,8 @@ export default function Edit() {
     setName(product.name);
     setSizes(product.sizes);
     setDescription(product.description);
-    imageRef.current.src=product.image;
-    imageRef.current.alt=product.image;
+    imageRef.current.src=`${API.IMAGE_URL}/${product.img}`;
+    imageRef.current.alt=`${API.IMAGE_URL}/${product.img}`;
   }
 
   React.useEffect(()=>{

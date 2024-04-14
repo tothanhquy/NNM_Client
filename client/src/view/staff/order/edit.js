@@ -40,7 +40,7 @@ export default function Create() {
   const [orderDetailsStatus,setOrderDetailsStatus ] = React.useState("canceled");
   const [orderDetailsProducts,setOrderDetailsProducts ] = React.useState([]);
 
-  const [editAble,setEditAble] = React.useState(false);
+  const [editAble,setEditAble] = React.useState(true);
   
   const addProductHandle = function(productId,name,size,price,number){
     let newProduct = {productId:productId,name:name,size:size,price:price,number:number};
@@ -69,6 +69,11 @@ export default function Create() {
       return;
     }
 
+    if(orderDetailsProducts.length===0){
+      setAlertDialog("Vui lòng chọn sản phẩm");
+      return;
+    }
+
     const data = new FormData(event.currentTarget);
     
     let sdt = data.get('sdt');
@@ -83,7 +88,7 @@ export default function Create() {
     });
     products=products.join(';');
 
-    let res = await OrderService.updateOrder(sdt, note, isTakeAway, numberTable, orderDetailsStatus, discountCode, products);
+    let res = await OrderService.updateOrder(id, sdt, note, isTakeAway,orderDetailsStatus, numberTable, discountCode, products);
     if(res.status === 'success'){
       window.location.reload();
     }else{
@@ -93,17 +98,25 @@ export default function Create() {
 
   const setOrderDetails = function(details){
     setOrderDetailsSdt(details.sdt);
-    setOrderDetailsTableNumber(details.tableNumber);
-    setOrderDetailsIsTakeAway(details.isTakeAway===true?"Mang đi":"Tại quán");
+    setOrderDetailsTableNumber(details.numberTable);
+    setOrderDetailsIsTakeAway(details.isTakeAway);
     setOrderDetailsNote(details.note);
     setOrderDetailsUser(details.userId);
     setOrderDetailsDiscountPayment(details.discountPayment);
     setOrderDetailsTime(GeneralMethod.convertTimeToDateTime(details.time));
     setOrderDetailsStatus(details.status);
-    setOrderDetailsProducts(details.products);
     if(details.status ==="waiting"||details.status ==="preparing"||details.status ==="completed"){
       setEditAble(true);
     }
+    OrderService.getOrderDetailsProducts(details.orderId).then((res) => {
+        if(res.status === 'success'){
+          //convert
+          // console.log(res.data);
+          setOrderDetailsProducts(res.data);
+        }else{
+          setAlertDialog(res.message);
+        }
+    });
   }
 
   React.useEffect(()=>{
@@ -146,9 +159,12 @@ export default function Create() {
             alignItems: 'center',
           }}
         >
+
           <Typography component="h1" variant="h5">
             
           </Typography>
+          <CollapsibleTableDeleteAble handleRemoveProduct={removeProductHandle} orderDetails={orderDetailsProducts}/>
+
           <Box component="form" onSubmit={handleEditOrder} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -171,7 +187,7 @@ export default function Create() {
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 label="Trạng thái"
-                name="isTakeAway"
+                name="status"
                 value={orderDetailsStatus}
                 onChange={(e)=>setOrderDetailsStatus(e.target.value)}
               >
@@ -192,6 +208,7 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Số điện thoại"
               name="sdt"
               type="text"
@@ -201,8 +218,9 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Số bàn"
-              name="tableNumber"
+              name="numberTable"
               type="number"
               value={orderDetailsTableNumber}
               onChange={(e)=>setOrderDetailsTableNumber(e.target.value)}
@@ -227,13 +245,14 @@ export default function Create() {
                 value={orderDetailsIsTakeAway}
                 onChange={(e)=>setOrderDetailsIsTakeAway(e.target.value)}
               >
-                <MenuItem value={true}>Mang đi</MenuItem>
-                <MenuItem value={false}>Tại chổ</MenuItem>
+                <MenuItem value={"true"}>Mang đi</MenuItem>
+                <MenuItem value={"false"}>Tại chổ</MenuItem>
               </Select>
             </FormControl>
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Ghi chú"
               name="note"
               type="text"
@@ -256,7 +275,6 @@ export default function Create() {
               type="text"
               value={orderDetailsProducts.reduce((result, product)=>result+product.number*product.price,0)}
             />
-            <CollapsibleTableDeleteAble handleRemoveProduct={removeProductHandle} orderDetails={orderDetailsProducts}/>
             {
               message &&
               <Alert severity={message.status}>{message.content}</Alert>

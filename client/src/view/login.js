@@ -23,12 +23,11 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let body ={
-      sdt: data.get('sdt'),
-      password: data.get('password'),
-    };
 
-    let res = await AuthService.loginUser(body);
+    let email= data.get('email');
+    let password= data.get('password');
+
+    let res = await AuthService.loginUser(email,password);
     if(res.status === 'success'){
       let role = res.data.role;
       if(role === 'admin'){
@@ -62,16 +61,15 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Number Phone"
-              name="sdt"
-              type="number"
-              autoComplete="numberPhone"
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
               autoFocus
             />
             <TextField

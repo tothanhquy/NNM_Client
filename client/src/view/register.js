@@ -25,13 +25,12 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    let body ={
-      sdt: data.get('sdt'),
-      password: data.get('password'),
-      name: data.get('name'),
-    };
+    let sdt= data.get('sdt');
+    let password= data.get('password');
+    let name= data.get('name');
+    let email= data.get('email');
 
-    let res = await AuthService.registerUser(body);
+    let res = await AuthService.registerUser(sdt,password,name,email);
     if(res.status === 'success'){
       setMessage({status: "success", content:"Đăng ký thành công"});
     }else{
@@ -57,8 +56,18 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
                   autoComplete="given-name"

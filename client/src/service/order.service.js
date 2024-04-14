@@ -30,20 +30,20 @@ const rowsInit = [
 ];
 
 
-const SERVICE_PATH = "/order"
+const SERVICE_PATH = "/orders"
 class OrderService{
 
     static async createOrder(sdt, note, isTakeAway, numberTable, discountCode, products="{id}:{size}:{number}"){//vd:products=["2:S.3;L.1","5:M.3"]
         let body = {
-            "sdt":sdt,
-            "note":note,
+            "sdt":sdt||"",
+            "note":note||"",
             "isTakeAway":isTakeAway,
-            "numberTable":numberTable,
-            "discountCode":discountCode,
+            "numberTable":numberTable||"",
+            "discountCode":discountCode||"",
             "products":products
         }
         // return new Response("success",200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/createOrder`,body);
+        return await API.post(`${SERVICE_PATH}`,body);
     }
     //role: staff
     // static async getAllOrders(page=0,status="open/close"){//new to old
@@ -55,7 +55,7 @@ class OrderService{
     // }
     static async getAllOrders(){//new to old
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}/getAllOrders`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
     static async updateOrderStatus(id, status){//vd:products=["2:S.3;L.1","5:M.3"]
         //only open order
@@ -69,8 +69,8 @@ class OrderService{
     static async updateOrder(id, sdt, note, isTakeAway,status, numberTable, discountCode, products="{id}:S.{number};M.{number}<>{id}:S.{number};M.{number}"){//vd:products=["2:S.3;L.1","5:M.3"]
         //only open order
         let body = {
-            "sdt":sdt,
-            "note":note,
+            "sdt":sdt||"",
+            "note":note||"",
             "isTakeAway":isTakeAway,
             "status":status,
             "numberTable":numberTable,
@@ -104,6 +104,9 @@ class OrderService{
         // }else{
         //     return new Response("success",200,"",productRes);
         // }
+        return await API.get(`${SERVICE_PATH}/${id}`,{});
+    }
+    static async getOrderDetailsProducts(id){
         return await API.get(`${SERVICE_PATH}/getOrderDetails/${id}`,{});
     }
     //role: user

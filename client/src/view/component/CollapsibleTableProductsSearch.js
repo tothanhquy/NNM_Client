@@ -19,7 +19,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 
 import ProductService from '../../service/product.service';
-
+import API from '../../service/api';
 
 
 function createProductSizeView(size,price) {
@@ -101,7 +101,7 @@ function ProductRow({product,addHandle}) {
         </TableCell>
         <TableCell align="right">
           <img
-            src={`${product.image}?w=164&h=164&fit=crop&auto=format`}
+            src={`${API.IMAGE_URL}/${product.image}`}
             alt={product.name}
             loading="lazy"
             style={{maxHeight:'50px'}}
@@ -161,7 +161,7 @@ export default function CollapsibleTable({addProduct}) {
             let spl = s.split(":");
             return {size: spl[0], price: parseInt(spl[1])};
           });
-          return {id:p.id,name:p.name,image:p.image,sizes:hanSizes};
+          return {id:p.productId,name:p.name,image:p.img,sizes:hanSizes};
         });
         setRows(products);
         // setFixRows(products);

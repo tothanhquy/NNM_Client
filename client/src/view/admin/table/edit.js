@@ -27,7 +27,7 @@ export default function Edit() {
 
   const [name, setName] = React.useState("");
   const [floor, setFloor] = React.useState(1);
-  const [tableNumber, setTableNumber] = React.useState(1);
+  const [tableNumber, setTableNumber] = React.useState(null);
 
   const { id } = useParams();
   const tableId = id;

@@ -20,29 +20,27 @@ const rowsInit = [
     createData(13,"user 13","011394","user",false),
 ];
 
-const SERVICE_PATH = "/user";
+const SERVICE_PATH = "/users";
 class UserService{
 
 
     static async getAllUsers(){
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}/getAllUser`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
     static async updateRole(id,role){
         let body = {
-            "id":id,
             "role":role
         }
         // return new Response("success",200,"",{});
-        return await API.post(`${SERVICE_PATH}/updateRole`,body);
+        return await API.post(`${SERVICE_PATH}/changeRole/${id}`,body);
     }
     static async updateBan(id,isBan){
         let body = {
-            "id":id,
             "isBan":isBan
         }
         // return new Response("success",200,"",{});
-        return await API.post(`${SERVICE_PATH}/updateBan`,body);
+        return await API.post(`${SERVICE_PATH}/changeBan/${id}`,body);
     }
     static async searchUsers(search, filter){//filter:"name/sdt"
         let params = {

@@ -73,6 +73,11 @@ export default function Create() {
   const handleCreateOrder = async (event) => {
     event.preventDefault();
 
+    if(orderDetailsProducts.length===0){
+      setAlertDialog("Vui lòng chọn sản phẩm");
+      return;
+    }
+
     const data = new FormData(event.currentTarget);
     
     let sdt = data.get('sdt');
@@ -89,8 +94,7 @@ export default function Create() {
 
     let res = await OrderService.createOrder(sdt, note, isTakeAway, numberTable, discountCode, products);
     if(res.status === 'success'){
-      let newId = res.data.newId;
-      window.location.href = "/staff/order/edit/"+newId;
+      window.location.href = "/staff/order";
     }else{
       setAlertDialog(res.message);
     }
@@ -148,8 +152,9 @@ export default function Create() {
           }}
         >
           <Typography component="h1" variant="h5">
-            
+            Tạo đơn mới
           </Typography>
+          <CollapsibleTableDeleteAble handleRemoveProduct={removeProductHandle} orderDetails={orderDetailsProducts}/>
           <Box component="form" onSubmit={handleCreateOrder} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
@@ -161,6 +166,7 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Số điện thoại"
               name="sdt"
               type="text"
@@ -168,6 +174,7 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Số bàn"
               name="numberTable"
               type="number"
@@ -183,13 +190,14 @@ export default function Create() {
                 value={orderDetailsIsTakeAway}
                 onChange={(e)=>setOrderDetailsIsTakeAway(e.target.value)}
               >
-                <MenuItem value={true}>Mang đi</MenuItem>
-                <MenuItem value={false}>Tại chổ</MenuItem>
+                <MenuItem value={"true"}>Mang đi</MenuItem>
+                <MenuItem value={"false"}>Tại chổ</MenuItem>
               </Select>
             </FormControl>
             <TextField
               margin="normal"
               fullWidth
+              required
               label="Ghi chú"
               name="note"
               type="text"
@@ -210,7 +218,6 @@ export default function Create() {
               type="text"
               value={orderDetailsProducts.reduce((result, product)=>result+product.number*product.price,0)}
             />
-            <CollapsibleTableDeleteAble handleRemoveProduct={removeProductHandle} orderDetails={orderDetailsProducts}/>
             {
               message &&
               <Alert severity={message.status}>{message.content}</Alert>
