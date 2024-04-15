@@ -75,6 +75,15 @@ export default function Edit() {
     setBeforePrderDetailsIsTakeAway(details.isTakeAway===true?"Mang đi":"Tại quán");
     setBeforePrderDetailsNote(details.note);
     setBeforePrderDetailsDiscountCode(details.discountCode);
+    BeforeOrderService.getAllBeforeOrdersDetailsItems(details.beforeOrderId).then((res) => {
+      if(res.status === 'success'){
+        //convert
+        // console.log(res.data);
+        setBeforeOrderDetailsProducts(res.data);
+      }else{
+        setAlertDialog(res.message);
+      }
+  });
     setBeforeOrderDetailsProducts(details.products);
   }
 

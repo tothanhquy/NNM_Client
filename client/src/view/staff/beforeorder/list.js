@@ -128,13 +128,13 @@ export default function CustomPaginationActionsTable() {
 
   const updateRowByIdWithStatus = function(id, status){
     setFixRows(fixRows.map(function(row){
-      if(row.id === id){
+      if(row.beforeOrderId === id){
         row.status = status;
       }
       return row;
     }));
     setRows(rows.map(function(row){
-      if(row.id === id){
+      if(row.beforeOrderId === id){
         row.status = status;
       }
       return row;
@@ -234,6 +234,7 @@ export default function CustomPaginationActionsTable() {
     BeforeOrderService.convertOrder(id)
     .then((res)=>{
       if(res.status === 'success'){
+        setAlertDialog("Convert thành công");
         setConvertDialog(null);
       }else{
         setAlertDialog(res.message);
@@ -320,10 +321,10 @@ export default function CustomPaginationActionsTable() {
                 <Link href={`/staff/before-order/details/${row.beforeOrderId}`}>#{row.beforeOrderId}</Link>
               </TableCell>
               <TableCell >
-                {row.sdt}
+                {row.name}
               </TableCell>
               <TableCell >
-                {GeneralMethod.convertTimeToDate(row.time)}
+                {GeneralMethod.convertTimeToDateTime(row.time)}
               </TableCell>
               
               <TableCell >
@@ -335,11 +336,10 @@ export default function CustomPaginationActionsTable() {
                     id="demo-simple-select"
                     label="status"
                     value={row.status}
-                    onChange={(e)=>{changeStatusOfBeforeOrder(row.id,e.target.value)}}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.beforeOrderId,e.target.value)}}
                   >
-                    <MenuItem value={"waiting"}>Chờ</MenuItem>
-                    <MenuItem value={"preparing"}>Đang chuẩn bị</MenuItem>
-                    <MenuItem value={"completed"}>Đã hoàn thành</MenuItem>
+                    <MenuItem value={"waiting"}>Đang chờ</MenuItem>
+                    <MenuItem value={"handled"}>Đã xử lý</MenuItem>
                   </Select>
                 </FormControl>
                 :<FormControl sx={{ bgcolor: 'info.main', m: 1, minWidth: 200 }} required>
@@ -373,7 +373,7 @@ export default function CustomPaginationActionsTable() {
                 {row.discountCode}
               </TableCell>
               <TableCell style={{ width: 160 }} align='center'>
-                <Button onClick={()=>{setConvertDialog(row.id)}} >Convert</Button>
+                <Button onClick={()=>{setConvertDialog(row.beforeOrderId)}} >Convert</Button>
               </TableCell>
             </TableRow>
           ))}

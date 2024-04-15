@@ -1,5 +1,13 @@
 export function convertTimeToDateTime(time) {
-    var date = new Date(time);
+    var date;
+    if (typeof time === 'number') {
+        date = new Date(time * 1000); // Nếu time là Unix timestamp, nhân với 1000 để chuyển đổi thành miligiây
+    } else {
+        date = new Date(time); // Nếu time là một chuỗi ngày/tháng/năm, không cần nhân với 1000
+    }
+    // return (new Date()).toLocaleString();
+    // return (new Date(time)).toLocaleString();
+    // var date = new Date(time);
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getFullYear();
@@ -9,7 +17,13 @@ export function convertTimeToDateTime(time) {
     return day + "/" + month + "/" + year + " " + hour + ":" + minute + ":" + second;
 }
 export function convertTimeToDate(time) {
-    var date = new Date(time);
+    var date;
+    if (typeof time === 'number') {
+        date = new Date(time * 1000); // Nếu time là Unix timestamp, nhân với 1000 để chuyển đổi thành miligiây
+    } else {
+        date = new Date(time); // Nếu time là một chuỗi ngày/tháng/năm, không cần nhân với 1000
+    }
+    // var date = new Date(time);
     var day = date.getDate();
     var month = date.getMonth() + 1;
     var year = date.getFullYear();

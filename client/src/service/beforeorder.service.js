@@ -62,6 +62,10 @@ class BeforeOrderService{
         // return new Response("success",200,"",rowsInit);
         return await API.get(`${SERVICE_PATH}`,{});
     }
+    static async getAllBeforeOrdersDetailsItems(id){//new to old
+        // return new Response("success",200,"",rowsInit);
+        return await API.get(`${SERVICE_PATH}/getBeforeOrderDetailsItems/${id}`,{});
+    }
     //role: staff/user
     static async getBeforeOrderDetails(id){
         // let productRes=undefined;

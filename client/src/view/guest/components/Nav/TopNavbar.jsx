@@ -17,6 +17,7 @@ export default function TopNavbar() {
   const [y, setY] = useState(window.scrollY);
   const [sidebarOpen, toggleSidebar] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
 
   const logout = function(e){
     AuthService.logoutUser()
@@ -26,8 +27,10 @@ export default function TopNavbar() {
   }
 
   useEffect(() => {
+    if(!isCheck)
     AuthService.checkLogin()
     .then((res) => {
+      setIsCheck(true);
        if(res.status ==='success'){
          setIsLogin(true);
        }else{

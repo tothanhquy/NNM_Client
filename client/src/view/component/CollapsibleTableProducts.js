@@ -54,7 +54,7 @@ function convertToProductView(orderDetails=[]){
     }else{
       let productView = createProductView();
       productView.productId = p.productId;
-      productView.name = p.productId;
+      productView.name = p.name;
       productView.sizeCount = p.number;
       productView.totalMoney = p.price*p.number;
       productView.sizes = [createProductSizeView(p.size,p.price,p.number)];
