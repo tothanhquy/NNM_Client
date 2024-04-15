@@ -17,6 +17,11 @@ import Products from "./components/Sections/Products";
 // import Footer from "./components/Sections/Footer"
 
 export default function Landing() {
+  const getNavOne = React.useMemo(() => {
+    return (
+      <TopNavbar />
+    );
+  }, []);
   return (
     <>
 	<Helmet>
@@ -24,7 +29,7 @@ export default function Landing() {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
       </Helmet>
-      <TopNavbar />
+      {getNavOne}
       <Header />
       {/* <Services /> */}
       <Products />

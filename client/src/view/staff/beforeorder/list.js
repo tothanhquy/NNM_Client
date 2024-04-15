@@ -317,10 +317,10 @@ export default function CustomPaginationActionsTable() {
           ).map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
-                <Link href={`/staff/before-order/details/${row.id}`}>#{row.id}</Link>
+                <Link href={`/staff/before-order/details/${row.beforeOrderId}`}>#{row.beforeOrderId}</Link>
               </TableCell>
               <TableCell >
-                {row.userId}
+                {row.sdt}
               </TableCell>
               <TableCell >
                 {GeneralMethod.convertTimeToDate(row.time)}
@@ -348,7 +348,7 @@ export default function CustomPaginationActionsTable() {
                     id="demo-simple-select"
                     label="status"
                     value={row.status}
-                    onChange={(e)=>{changeStatusOfBeforeOrder(row.id,e.target.value)}}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.beforeOrderId,e.target.value)}}
                   >
                     <MenuItem value={"waiting"}>Đang chờ</MenuItem>
                     <MenuItem value={"handled"}>Đã xử lý</MenuItem>

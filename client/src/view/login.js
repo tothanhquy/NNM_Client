@@ -29,14 +29,14 @@ export default function Login() {
 
     let res = await AuthService.loginUser(email,password);
     if(res.status === 'success'){
-      let role = res.data.role;
-      if(role === 'admin'){
-        window.location.href = '/admin';
-      }else if(role === 'staff'){
-        window.location.href = '/staff';
-      }else {
+      // let role = res.data.role;
+      // if(role === 'admin'){
+      //   window.location.href = '/admin';
+      // }else if(role === 'staff'){
+      //   window.location.href = '/staff';
+      // }else {
         window.location.href = '/';
-      }
+      // }
       // setMessage({status: "success", content:"res.message"});
     }else{
       setMessage({status: "warning", content:res.message});

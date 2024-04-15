@@ -6,9 +6,24 @@ import "./style/flexboxgrid.min.css";
 import './style/index.css';
 import { Helmet } from "react-helmet";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useParams } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Alert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Grid from '@mui/material/Grid';
 
-import CollapsibleTable from "../component/CollapsibleTableProductsDeleteAble";
+import CollapsibleTableDeleteAble from "../component/CollapsibleTableProductsDeleteAble";
 import ProductService from "../../service/product.service";
+import BeforeOrderService from "../../service/beforeorder.service";
+import AuthService from "../../service/auth.service";
 import * as CookieCart from "../../service/user_cart.storage";
 import * as CustomDialog from "../component/dialog";
 // Sections
@@ -22,9 +37,15 @@ import TopNavbar from "./components/Nav/TopNavbar";
 // import Footer from "./components/Sections/Footer"
 const defaultTheme = createTheme();
 export default function Cart() {
-  let products = useRef([]);
+  const products = useRef([]);
+  const numberTableRef = useRef(null);
+  const noteRef = useRef(null);
+  const isTakeAwayRef = useRef(null);
+  const discountCodeRef = useRef(null);
   const [cartItems,setCartItems] = React.useState([]);
   const [alertDialog,setAlertDialog] = React.useState(null);
+  const [submitCreateDialog,setSubmitCreateDialog] = React.useState(null);
+  const [isLogin, setIsLogin] = React.useState(false);
 
   const getProductPriceAndName = function(id,size){
     let indPro = products.current.findIndex(p => p.productId+"" === id);
@@ -72,6 +93,49 @@ export default function Cart() {
     setCartItems(resCartItem);
   }
 
+  const handleCreateOrder = function(){
+    // event.preventDefault();
+    if(cartItems.length===0){
+      setAlertDialog("Vui lòng chọn sản phẩm");
+      return;
+    }
+    let note = noteRef.current.value;
+    let isTakeAway = isTakeAwayRef.current.value;
+    let numberTable = numberTableRef.current.value;
+    let discountCode = discountCodeRef.current.value;
+
+    let products = [];
+    cartItems.forEach(product => {
+      products.push(`${product.productId}:${product.size}:${product.number}`);
+    });
+    products=products.join(';');
+
+    BeforeOrderService.createBeforeOrder(numberTable, isTakeAway, note, discountCode, products)
+    .then(res=>{
+      if(res.status === 'success'){
+        setAlertDialog("Đặt hàng thành công!");
+        setSubmitCreateDialog(null)
+        setCartItems([]);
+        CookieCart.setCartItems([]);
+      }else{
+        setAlertDialog(res.message);
+      }
+    });
+    
+  }
+
+  const handleCreateOrderClick = function(event){
+    event.preventDefault();
+    // const data = new FormData(event.currentTarget);
+    setSubmitCreateDialog();
+  }
+
+  const getNavOne = React.useMemo(() => {
+    return (
+      <TopNavbar />
+    );
+  }, []);
+
   React.useEffect(() => {
     ProductService.getAllProducts()
     .then(res=>{
@@ -86,11 +150,19 @@ export default function Cart() {
         setAlertDialog(res.message);
       }
     });
+    AuthService.checkLogin()
+    .then((res) => {
+       if(res.status ==='success'){
+         setIsLogin(true);
+       }else{
+         setIsLogin(false);
+       }
+     });
   }
   ,[]);
   return (
     <ThemeProvider theme={defaultTheme}>
-    {
+      {
         alertDialog!== null?
         <CustomDialog.AlertDialog
           message={alertDialog}
@@ -98,16 +170,116 @@ export default function Cart() {
         />
         : null
       }
+      {submitCreateDialog!==null&&
+        <CustomDialog.AskDialog
+          open={true}
+          title="Xác nhận đặt hàng"
+          content={"Bạn có chắc chắn muốn đặt hàng?"}
+          onClose={()=>{setSubmitCreateDialog(null)}}
+          onHandle={()=>{handleCreateOrder(submitCreateDialog)}}
+        />
+      }
 	    <Helmet>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
       </Helmet>
-      <TopNavbar />
-      <div style={{margin:"auto",width:"100%",maxWidth:"800px",display:"flex",fexDirection:"column",paddingTop:"100px"}}>
-        <CollapsibleTable orderDetails={cartItems} handleRemoveProduct={handleDeleteProduct} />
+      {
+        getNavOne
+      }
+      
 
-      </div>
+      <Box style={{margin:"auto",width:"100%",maxWidth:"800px",display:"flex",flexDirection:"column",justifyContent:"start",paddingTop:"100px"}}>
+          <Typography component="h1" variant="h5">
+            Giỏ hàng
+          </Typography>
+          <CollapsibleTableDeleteAble orderDetails={cartItems} handleRemoveProduct={handleDeleteProduct} />
+          
+          {
+            isLogin?
+            <Box component="form" onSubmit={handleCreateOrderClick} sx={{ mt: 1 }}>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Số lượng sản phẩm"
+                  type="number"
+                  value={cartItems.reduce((result, product)=>result+product.number,0)}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  required
+                  label="Số điện thoại"
+                  name="sdt"
+                  type="text"
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  required
+                  label="Số bàn"
+                  name="numberTable"
+                  type="number"
+                  inputRef ={numberTableRef}
+                />
+                <FormControl sx={{ m: 1, minWidth: 200 }}>
+                  <p>Hình thức</p>
+                  {/* <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel> */}
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Trạng thái"
+                    name="isTakeAway"
+                    inputRef ={isTakeAwayRef}
+                    defaultValue={"true"}
+                  >
+                    <MenuItem value={"true"}>Mang đi</MenuItem>
+                    <MenuItem value={"false"}>Tại chổ</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  required
+                  label="Ghi chú"
+                  name="note"
+                  type="text"
+                  inputRef ={noteRef}
+                  multiline
+                  minRows="3"
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Mã giảm giá"
+                  name="discountCode"
+                  type="text"
+                  inputRef ={discountCodeRef}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Tổng bill"
+                  type="text"
+                  value={cartItems.reduce((result, product)=>result+product.number*product.price,0)}
+                />
+                <Box style={{display:'flex',justifyContent: 'space-between', flexDirection:'row'}}>
+                  <Button size="small" variant="outline" href={"/staff/order"}>Quay lại danh sách</Button>
+                  <Button
+                    type="submit"
+                    align="right"
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Đặt hàng 
+                  </Button>
+                </Box>
+              </Box>
+            :
+            <Alert severity="info">Bạn cần đăng nhập để đặt hàng.</Alert>
+          }
+
+      </Box>
     </ThemeProvider>
   );
 }

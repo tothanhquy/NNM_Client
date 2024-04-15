@@ -33,7 +33,7 @@ const rowsInit = [
 
 
 
-const SERVICE_PATH = "/beforeorder"
+const SERVICE_PATH = "/before_orders"
 class BeforeOrderService{
 
     
@@ -47,7 +47,7 @@ class BeforeOrderService{
             "discountCode":discountCode,
             "products":products
         }
-        return await API.post(`${SERVICE_PATH}/createBeforeOrder`,body);
+        return await API.post(`${SERVICE_PATH}`,body);
     }
     //role: staff
     static async getAllBeforeOrdersPage(page=0,status="open/close"){//new to old
@@ -60,7 +60,7 @@ class BeforeOrderService{
     //role: staff
     static async getAllBeforeOrders(){//new to old
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}/getAllBeforeOrders`,{});
+        return await API.get(`${SERVICE_PATH}`,{});
     }
     //role: staff/user
     static async getBeforeOrderDetails(id){
@@ -76,7 +76,7 @@ class BeforeOrderService{
         // }else{
         //     return new Response("success",200,"",productRes);
         // }
-        return await API.get(`${SERVICE_PATH}/getBeforeOrderDetails/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/${id}`,{});
     }
     //role: user
     static async getBeforeOrdersOfUser(){
