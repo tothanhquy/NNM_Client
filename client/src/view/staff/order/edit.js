@@ -16,11 +16,24 @@ import Grid from '@mui/material/Grid';
 
 import OrderService from '../../../service/order.service';
 import * as GeneralMethod from '../../../common_method/general';
+import DiscountService from "../../service/discount.service";
+
 
 import * as CustomDialog from '../../component/dialog';
 import CollapsibleTableDeleteAble from '../../component/CollapsibleTableProductsDeleteAble';
 import CollapsibleTableProductsSearch from '../../component/CollapsibleTableProductsSearch';
 // TODO remove, this demo shouldn't need to reset the theme.
+
+
+const getDiscountPercent = function(discount, productId){
+  let productIds = discount.productIds.split(";");
+  if(productIds.indexOf(productId)!==-1){
+    return discount.discountPercent;
+  }else{
+    return 0;
+  }
+}
+
 
 const defaultTheme = createTheme();
 
@@ -40,8 +53,37 @@ export default function Create() {
   const [orderDetailsStatus,setOrderDetailsStatus ] = React.useState("canceled");
   const [orderDetailsProducts,setOrderDetailsProducts ] = React.useState([]);
 
+  const orderDetailsOldDiscountCode = React.useRef(null);
+  const orderDetailsOldDiscountPayment = React.useRef(null);
+  const orderDetailsOldTotalBill = React.useRef(null);
+
   const [editAble,setEditAble] = React.useState(true);
   
+  const [discount, setDiscount] = React.useState(null);
+  const [discountMessage, setDiscountMessage] = React.useState(null);
+
+  const calcuDiscountPayment = ()=>{
+    if(discount==null) return 0;
+    let discountPayment = 0;
+    for(let i=0; i<orderDetailsProducts.length; i++){
+      discountPayment += getDiscountPercent(discount,orderDetailsProducts[i].productId)*orderDetailsProducts[i].price*orderDetailsProducts[i].number;
+    }
+    return discountPayment;
+  }
+  
+  const getCheckDiscount = (discountCode) => {
+    DiscountService.getDiscountByCode(discountCode)
+    .then((res) => {
+       if(res.status ==='success'){
+          setDiscount(res.data);
+         setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+       }else{
+          setDiscountMessage({status:"warning",message:res.message});
+       }
+     });
+     setOrderDetailsDiscountCode(discountCode);
+  };
+
   const addProductHandle = function(productId,name,size,price,number){
     let newProduct = {productId:productId,name:name,size:size,price:price,number:number};
     let ind = orderDetailsProducts.findIndex(e=>e.productId === productId&&e.size === size);
@@ -102,9 +144,13 @@ export default function Create() {
     setOrderDetailsIsTakeAway(details.isTakeAway);
     setOrderDetailsNote(details.note);
     setOrderDetailsUser(details.userId);
-    setOrderDetailsDiscountPayment(details.discountPayment);
+    // setOrderDetailsDiscountPayment(details.discountPayment);
     setOrderDetailsTime(GeneralMethod.convertTimeToDateTime(details.time));
     setOrderDetailsStatus(details.status);
+    orderDetailsOldDiscountCode.current = details.discountCode;
+    orderDetailsOldDiscountPayment.current = details.discountPayment;
+    orderDetailsOldTotalBill.current = details.totalBill;
+    setOrderDetailsDiscountCode(details.discountCode);
     if(details.status ==="waiting"||details.status ==="preparing"||details.status ==="completed"){
       setEditAble(true);
     }
@@ -225,15 +271,6 @@ export default function Create() {
               value={orderDetailsTableNumber}
               onChange={(e)=>setOrderDetailsTableNumber(e.target.value)}
             />
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Mã giảm giá"
-              name="discountCode"
-              type="text"
-              value={orderDetailsDiscountCode}
-              onChange={(e)=>setOrderDetailsDiscountCode(e.target.value)}
-            />
             <FormControl sx={{ m: 1, minWidth: 200 }}>
               <p>Hình thức</p>
               {/* <InputLabel id="demo-simple-select-label">Trạng thái</InputLabel> */}
@@ -264,16 +301,50 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              label="Giảm giá"
+              label="Mã giảm giá cũ"
               type="text"
-              value={orderDetailsDiscountPayment}
+              inputRef={orderDetailsOldDiscountCode}
             />
             <TextField
               margin="normal"
               fullWidth
-              label="Tổng bill"
+              label="Giảm giá cũ"
               type="text"
-              value={orderDetailsProducts.reduce((result, product)=>result+product.number*product.price,0)}
+              inputRef={orderDetailsOldDiscountPayment}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Tổng bill cũ"
+              type="text"
+              inputRef={orderDetailsOldTotalBill}
+            />
+            {
+              discountMessage &&
+              <Alert severity={discountMessage.status}>{discountMessage.content}</Alert>
+            }
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Mã giảm giá mới"
+              name="discountCode"
+              type="text"
+              value={orderDetailsDiscountCode}
+              onChange={(e)=>getCheckDiscount(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Giảm giá mới"
+              type="text"
+              value={calcuDiscountPayment()}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Tổng bill mới"
+              type="text"
+              value={orderDetailsProducts.reduce((result, product)=>result+product.number*product.price,0)-calcuDiscountPayment()}
             />
             {
               message &&

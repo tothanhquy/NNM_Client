@@ -23,18 +23,24 @@ import Grid from '@mui/material/Grid';
 import CollapsibleTableDeleteAble from "../component/CollapsibleTableProductsDeleteAble";
 import ProductService from "../../service/product.service";
 import BeforeOrderService from "../../service/beforeorder.service";
+import DiscountService from "../../service/discount.service";
 import AuthService from "../../service/auth.service";
 import * as CookieCart from "../../service/user_cart.storage";
 import * as CustomDialog from "../component/dialog";
 // Sections
 import TopNavbar from "./components/Nav/TopNavbar";
-// import Header from "./components/Sections/Header";
-// import Services from "./components/Sections/Services";
-// import Products from "./components/Sections/Products";
-// import Blog from "./components/Sections/Blog";
-// import Pricing from "./components/Sections/Pricing";
-// import Contact from "./components/Sections/Contact";
-// import Footer from "./components/Sections/Footer"
+
+
+const getDiscountPercent = function(discount, productId){
+  let productIds = discount.productIds.split(";");
+  if(productIds.indexOf(productId)!==-1){
+    return discount.discountPercent;
+  }else{
+    return 0;
+  }
+}
+
+
 const defaultTheme = createTheme();
 export default function Cart() {
   const products = useRef([]);
@@ -46,6 +52,30 @@ export default function Cart() {
   const [alertDialog,setAlertDialog] = React.useState(null);
   const [submitCreateDialog,setSubmitCreateDialog] = React.useState(null);
   const [isLogin, setIsLogin] = React.useState(false);
+  const [discount, setDiscount] = React.useState(null);
+  const [discountMessage, setDiscountMessage] = React.useState(null);
+
+  const calcuDiscountPayment = ()=>{
+    if(discount==null) return 0;
+    let discountPayment = 0;
+    for(let i=0; i<cartItems.length; i++){
+      discountPayment += getDiscountPercent(discount,cartItems[i].productId)*cartItems[i].price*cartItems[i].number;
+    }
+    return discountPayment;
+  }
+  
+  const getCheckDiscount = (discountCode) => {
+    DiscountService.getDiscountByCode(discountCode)
+    .then((res) => {
+       if(res.status ==='success'){
+          setDiscount(res.data);
+         setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+       }else{
+          setDiscountMessage({status:"warning",message:res.message});
+       }
+     });
+     discountCodeRef.current=discountCode;
+  };
 
   const getProductPriceAndName = function(id,size){
     let indPro = products.current.findIndex(p => p.productId+"" === id);
@@ -208,7 +238,6 @@ export default function Cart() {
                 <TextField
                   margin="normal"
                   fullWidth
-                  required
                   label="Số điện thoại"
                   name="sdt"
                   type="text"
@@ -216,7 +245,6 @@ export default function Cart() {
                 <TextField
                   margin="normal"
                   fullWidth
-                  required
                   label="Số bàn"
                   name="numberTable"
                   type="number"
@@ -240,7 +268,6 @@ export default function Cart() {
                 <TextField
                   margin="normal"
                   fullWidth
-                  required
                   label="Ghi chú"
                   name="note"
                   type="text"
@@ -248,6 +275,10 @@ export default function Cart() {
                   multiline
                   minRows="3"
                 />
+                {
+                  discountMessage &&
+                  <Alert severity={discountMessage.status}>{discountMessage.content}</Alert>
+                }
                 <TextField
                   margin="normal"
                   fullWidth
@@ -255,13 +286,21 @@ export default function Cart() {
                   name="discountCode"
                   type="text"
                   inputRef ={discountCodeRef}
+                  onChange={(e)=>{getCheckDiscount(e.target.value)}}
+                />
+                <TextField
+                  margin="normal"
+                  fullWidth
+                  label="Giảm giá"
+                  type="text"
+                  value={calcuDiscountPayment()}
                 />
                 <TextField
                   margin="normal"
                   fullWidth
                   label="Tổng bill"
                   type="text"
-                  value={cartItems.reduce((result, product)=>result+product.number*product.price,0)}
+                  value={cartItems.reduce((result, product)=>result+product.number*product.price,0)-calcuDiscountPayment()}
                 />
                 <Box style={{display:'flex',justifyContent: 'space-between', flexDirection:'row'}}>
                   <Button size="small" variant="outline" href={"/staff/order"}>Quay lại danh sách</Button>

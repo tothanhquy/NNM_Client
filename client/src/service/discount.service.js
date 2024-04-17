@@ -26,7 +26,7 @@ const rowsInit = [
 
 const SERVICE_PATH = "/discounts"
 class DiscountService{
-    static async createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productId="1.4"){
+    static async createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productIds="1;4"){
         let body = {
             "name":name,
             "code":code,
@@ -35,7 +35,7 @@ class DiscountService{
             "discountMoney":discountMoney,
             "startTime":startTime,
             "endTime":endTime,
-            "productId":productId
+            "productIds":productIds
         }
         // return new Response("success", 200,"",{newId:3});
         return await API.post(`${SERVICE_PATH}`,body);
@@ -67,7 +67,7 @@ class DiscountService{
         return await API.delete(`${SERVICE_PATH}/${id}`,{});
     }
     //role: admin
-    static async updateDiscount(id,code,name, description, discountPercent, discountMoney,startTime,endTime,productId="1.5"){
+    static async updateDiscount(id,code,name, description, discountPercent, discountMoney,startTime,endTime,productIds="1;5"){
         let body = {
             "name":name,
             "description":description,
@@ -76,7 +76,7 @@ class DiscountService{
             "discountMoney":discountMoney,
             "startTime":startTime,
             "endTime":endTime,
-            "productId":productId
+            "productIds":productIds
         }
         // return new Response("success", 200,"",{newId:3});
         return await API.post(`${SERVICE_PATH}/updateDiscount/${id}`,body);

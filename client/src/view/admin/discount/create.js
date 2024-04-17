@@ -27,7 +27,7 @@ export default function Create() {
     let description = data.get('description');
     let discountPercent = data.get('discountPercent');
     let discountMoney = data.get('discountMoney');
-    let productId = data.get('productId');
+    let productIds = data.get('productIds');
     let startTimeAsDate = data.get('startTime');
     let endTimeAsDate = data.get('endTime');
 
@@ -44,7 +44,7 @@ export default function Create() {
       return;
     }
 
-    DiscountService.createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productId)
+    DiscountService.createDiscount(name,code, description,  discountPercent, discountMoney, startTime, endTime, productIds)
     .then(res=>{
       if(res.status === 'success'){
         let newId = res.data.id;
@@ -127,8 +127,10 @@ export default function Create() {
               margin="normal"
               required
               fullWidth
-              label="sản phẩm (id)"
-              name="productId"
+              multiline
+              rows={5}
+              label="các sản phẩm (id) | id1;id2;id3"
+              name="productIds"
               type="text"
             />
             <TextField

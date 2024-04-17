@@ -47,7 +47,7 @@ export default function Edit() {
     let description = data.get('description');
     let discountPercent = data.get('discountPercent');
     let discountMoney = data.get('discountMoney');
-    let productId = data.get('productId');
+    let productIds = data.get('productIds');
 
     let startTimeAsDate = data.get('startTime');
     let endTimeAsDate = data.get('endTime');
@@ -66,7 +66,7 @@ export default function Edit() {
       return;
     }
 
-    DiscountService.updateDiscount(discountId,name,code, description,  discountPercent, discountMoney, startTimestamp, endTimestamp, productId)
+    DiscountService.updateDiscount(discountId,name,code, description,  discountPercent, discountMoney, startTimestamp, endTimestamp, productIds)
     .then(res=>{
       if(res.status === 'success'){
         setMessage({status: "success", content:"Cập nhật Discount thành công"});
@@ -203,8 +203,10 @@ export default function Edit() {
               margin="normal"
               required
               fullWidth
-              label="sản phẩm (id)"
-              name="productId"
+              multiline
+              rows={5}
+              label="các sản phẩm (id) | id1;id2;id3"
+              name="productIds"
               type="text"
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
