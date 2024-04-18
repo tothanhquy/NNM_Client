@@ -128,13 +128,13 @@ export default function CustomPaginationActionsTable() {
 
   const updateRowByIdWithStatus = function(id, status){
     setFixRows(fixRows.map(function(row){
-      if(row.beforeOrderId === id){
+      if(row.orderId === id){
         row.status = status;
       }
       return row;
     }));
     setRows(rows.map(function(row){
-      if(row.beforeOrderId === id){
+      if(row.orderId === id){
         row.status = status;
       }
       return row;
@@ -316,12 +316,12 @@ export default function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.orderId}>
               <TableCell component="th" scope="row">
-                <Link href={`/staff/before-order/details/${row.beforeOrderId}`}>#{row.beforeOrderId}</Link>
+                <Link href={`/staff/before-order/details/${row.orderId}`}>#{row.orderId}</Link>
               </TableCell>
               <TableCell >
-                {row.name}
+                {row.user}
               </TableCell>
               <TableCell >
                 {GeneralMethod.convertTimeToDateTime(row.time)}
@@ -336,7 +336,7 @@ export default function CustomPaginationActionsTable() {
                     id="demo-simple-select"
                     label="status"
                     value={row.status}
-                    onChange={(e)=>{changeStatusOfBeforeOrder(row.beforeOrderId,e.target.value)}}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.orderId,e.target.value)}}
                   >
                     <MenuItem value={"waiting"}>Đang chờ</MenuItem>
                     <MenuItem value={"handled"}>Đã xử lý</MenuItem>
@@ -357,7 +357,7 @@ export default function CustomPaginationActionsTable() {
                 }
               </TableCell>
               <TableCell >
-                {row.tableNumber}
+                {row.numberTable}
               </TableCell>
               <TableCell >
                 {row.isTakeAway?

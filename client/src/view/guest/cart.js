@@ -59,7 +59,7 @@ export default function Cart() {
     if(discount==null) return 0;
     let discountPayment = 0;
     for(let i=0; i<cartItems.length; i++){
-      discountPayment += getDiscountPercent(discount,cartItems[i].productId)*cartItems[i].price*cartItems[i].number;
+      discountPayment += parseInt(getDiscountPercent(discount,cartItems[i].productId)*cartItems[i].price*cartItems[i].number/100);
     }
     return discountPayment;
   }
@@ -67,15 +67,16 @@ export default function Cart() {
   const getCheckDiscount = (discountCode) => {
     DiscountService.getDiscountByCode(discountCode)
     .then((res) => {
+      console.log(res);
       if(res.status ==='success'){
         if(res.data.startTime>Date.now()||res.data.endTime<Date.now()){
-          setDiscountMessage({status:"warning",message:"Mã đã ngoài thời gian hợp lệ"});
+          setDiscountMessage({status:"warning",content:"Mã đã ngoài thời gian hợp lệ"});
         }else{
           setDiscount(res.data);
-         setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+         setDiscountMessage({status:"info",content:"Mã giảm giá hợp lệ"});
         }
      }else{
-        setDiscountMessage({status:"warning",message:res.message});
+        setDiscountMessage({status:"warning",content:res.message});
      }
      });
      discountCodeRef.current=discountCode;
@@ -136,7 +137,7 @@ export default function Cart() {
     let note = noteRef.current.value;
     let isTakeAway = isTakeAwayRef.current.value;
     let numberTable = numberTableRef.current.value;
-    let discountCode = discountCodeRef.current.value;
+    let discountCode = discountCodeRef.current;
 
     let products = [];
     cartItems.forEach(product => {

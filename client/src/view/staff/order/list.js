@@ -159,9 +159,9 @@ export default function CustomPaginationActionsTable() {
         console.log(res.data);
         //sort
         if(sortType==="inc"){
-          res.data.sort((a,b) =>a.time-b.time);
+          res.data.sort((a,b) =>a.editTime-b.editTime);
         }else{
-          res.data.sort((b,a) =>a.time-b.time);
+          res.data.sort((b,a) =>a.editTime-b.editTime);
         }
         setFixRows(res.data);
         renderRows(res.data);
@@ -218,9 +218,9 @@ export default function CustomPaginationActionsTable() {
   }
   const sortData = (type) => {
     if(type==="inc"){
-      renderRows(rows.sort((a,b) =>a.time-b.time));
+      renderRows(rows.sort((a,b) =>a.editTime-b.editTime));
     }else{
-      renderRows(rows.sort((b,a) =>a.time-b.time));
+      renderRows(rows.sort((b,a) =>a.editTime-b.editTime));
     }
   }
 
@@ -330,10 +330,10 @@ export default function CustomPaginationActionsTable() {
                 <Link href={`/staff/order/edit/${row.orderId}`}>#{row.orderId}</Link>
               </TableCell>
               <TableCell >
-                {row.userId}
+                {row.staff}
               </TableCell>
               <TableCell >
-                {GeneralMethod.convertTimeToDateTime(row.time)}
+                {GeneralMethod.convertTimeToDateTime(row.editTime)}
               </TableCell>
               <TableCell >
                 {row.sdt}
@@ -401,7 +401,7 @@ export default function CustomPaginationActionsTable() {
                 {row.tableNumber}
               </TableCell>
               <TableCell >
-                {row.numberProduct}
+                {row.numberProducts}
               </TableCell>
               <TableCell >
                 {row.totalBill}

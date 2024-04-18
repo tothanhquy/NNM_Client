@@ -43,7 +43,7 @@ class DiscountService{
     //role: admin
     static async getAllDiscounts(){
         // return new Response("success",200,"",rowsInit);
-        return await API.get(`${SERVICE_PATH}`,{});
+        return await API.get(`${SERVICE_PATH}/getAll`,{});
     }
     //role: admin
     static async getDiscount(id){

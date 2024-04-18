@@ -80,7 +80,7 @@ class BeforeOrderService{
         // }else{
         //     return new Response("success",200,"",productRes);
         // }
-        return await API.get(`${SERVICE_PATH}/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/details/${id}`,{});
     }
     //role: user
     static async getBeforeOrdersOfUser(){
@@ -92,13 +92,13 @@ class BeforeOrderService{
             "status":status
         }
         // return new Response("success",200,"",{});
-        return await API.post(`${SERVICE_PATH}/updateBeforeOrderStatus/${id}`,body);
+        return await API.post(`${SERVICE_PATH}/ChangeStatus/${id}`,body);
     }
     //role: staff
     static async convertOrder(id){//id of before order
         // return new Response("success",200,"",{});
         //convert before order to order
-        return await API.post(`${SERVICE_PATH}/convertOrder/${id}`,{});
+        return await API.post(`${SERVICE_PATH}/convertToOrder/${id}`,{});
     }
 }
 export default BeforeOrderService;

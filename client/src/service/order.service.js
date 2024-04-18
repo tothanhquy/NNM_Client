@@ -63,7 +63,7 @@ class OrderService{
             "status":status
         }
         // return new Response("success",200,"",{});
-        return await API.post(`${SERVICE_PATH}/updateOrderStatus/${id}`,body);
+        return await API.post(`${SERVICE_PATH}/changeStatus/${id}`,body);
     }
     //role: staff
     static async updateOrder(id, sdt, note, isTakeAway,status, numberTable, discountCode, products="{id}:S.{number};M.{number}<>{id}:S.{number};M.{number}"){//vd:products=["2:S.3;L.1","5:M.3"]
@@ -77,7 +77,7 @@ class OrderService{
             "discountCode":discountCode,
             "products":products
         }
-        return await API.post(`${SERVICE_PATH}/updateOrder/${id}`,body);
+        return await API.post(`${SERVICE_PATH}/update/${id}`,body);
     }
     //role: staff
     // static async closeOrder(id){
@@ -104,7 +104,7 @@ class OrderService{
         // }else{
         //     return new Response("success",200,"",productRes);
         // }
-        return await API.get(`${SERVICE_PATH}/${id}`,{});
+        return await API.get(`${SERVICE_PATH}/details/${id}`,{});
     }
     static async getOrderDetailsProducts(id){
         return await API.get(`${SERVICE_PATH}/getOrderDetails/${id}`,{});

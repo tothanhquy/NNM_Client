@@ -13,12 +13,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
 
 import AuthService from '../service/auth.service';
+import JWT from '../service/jwt';
 // TODO remove, this demo shouldn't need to reset the theme.
 
 const defaultTheme = createTheme();
 
 export default function Login() {
   const [message, setMessage] = React.useState("");
+
+  React.useEffect(() => {
+    JWT.set("");
+  },[]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

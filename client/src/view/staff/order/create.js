@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid';
 
 import OrderService from '../../../service/order.service';
 import * as GeneralMethod from '../../../common_method/general';
-import DiscountService from "../../service/discount.service";
+import DiscountService from "../../../service/discount.service";
 
 import * as CustomDialog from '../../component/dialog';
 import CollapsibleTableDeleteAble from '../../component/CollapsibleTableProductsDeleteAble';
@@ -54,7 +54,7 @@ export default function Create() {
     if(discount==null) return 0;
     let discountPayment = 0;
     for(let i=0; i<orderDetailsProducts.length; i++){
-      discountPayment += getDiscountPercent(discount,orderDetailsProducts[i].productId)*orderDetailsProducts[i].price*orderDetailsProducts[i].number;
+      discountPayment += parseInt(getDiscountPercent(discount,orderDetailsProducts[i].productId)*orderDetailsProducts[i].price*orderDetailsProducts[i].number/100);
     }
     return discountPayment;
   }
@@ -62,15 +62,16 @@ export default function Create() {
   const getCheckDiscount = (discountCode) => {
     DiscountService.getDiscountByCode(discountCode)
     .then((res) => {
+      console.log(res);
       if(res.status ==='success'){
         if(res.data.startTime>Date.now()||res.data.endTime<Date.now()){
-          setDiscountMessage({status:"warning",message:"Mã đã ngoài thời gian hợp lệ"});
+          setDiscountMessage({status:"warning",content:"Mã đã ngoài thời gian hợp lệ"});
         }else{
           setDiscount(res.data);
-         setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+         setDiscountMessage({status:"info",content:"Mã giảm giá hợp lệ"});
         }
      }else{
-        setDiscountMessage({status:"warning",message:res.message});
+        setDiscountMessage({status:"warning",content:res.message});
      }
      });
      discountCodeRef.current=discountCode;
@@ -134,6 +135,7 @@ export default function Create() {
     products=products.join(';');
 
     let res = await OrderService.createOrder(sdt, note, isTakeAway, numberTable, discountCode, products);
+    console.log(res);
     if(res.status === 'success'){
       window.location.href = "/staff/order";
     }else{
@@ -207,7 +209,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Số điện thoại"
               name="sdt"
               type="text"
@@ -215,7 +216,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Số bàn"
               name="numberTable"
               type="number"
@@ -238,7 +238,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Ghi chú"
               name="note"
               type="text"

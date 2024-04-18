@@ -22,7 +22,7 @@ export default function TopNavbar() {
   const logout = function(e){
     AuthService.logoutUser()
     .then(res=>{
-        window.location.reload();
+        window.location.href="/login";
     })
   }
 

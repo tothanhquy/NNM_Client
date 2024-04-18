@@ -35,6 +35,8 @@ export default function Edit() {
   const [beforePrderDetailsNote,setBeforePrderDetailsNote ] = React.useState(null);
   const [beforePrderDetailsDiscountCode,setBeforePrderDetailsDiscountCode ] = React.useState(null);
   const [beforeOrderDetailsProducts,setBeforeOrderDetailsProducts ] = React.useState([]);
+  const [beforeOrderDetailsDiscountPayment,setBeforeOrderDetailsDiscountPayment ] = React.useState([]);
+  const [beforeOrderDetailsTotalBill,setBeforeOrderDetailsTotalBill ] = React.useState([]);
   
 
   const { id } = useParams();
@@ -68,23 +70,16 @@ export default function Edit() {
   };
 
   const setBeforeOrderDetails = function(details){
-    setBeforePrderDetailsUser(details.userId);
+    setBeforePrderDetailsUser(details.user);
     setBeforePrderDetailsTime(GeneralMethod.convertTimeToDateTime(details.time));
     setBeforePrderDetailsStatus(details.status);
     setBeforePrderDetailsTableNumber(details.tableNumber);
     setBeforePrderDetailsIsTakeAway(details.isTakeAway===true?"Mang đi":"Tại quán");
     setBeforePrderDetailsNote(details.note);
     setBeforePrderDetailsDiscountCode(details.discountCode);
-    BeforeOrderService.getAllBeforeOrdersDetailsItems(details.beforeOrderId).then((res) => {
-      if(res.status === 'success'){
-        //convert
-        // console.log(res.data);
-        setBeforeOrderDetailsProducts(res.data);
-      }else{
-        setAlertDialog(res.message);
-      }
-  });
     setBeforeOrderDetailsProducts(details.products);
+    setBeforeOrderDetailsDiscountPayment(details.discountPayment);
+    setBeforeOrderDetailsTotalBill(details.totalBill);
   }
 
   React.useEffect(()=>{
@@ -127,7 +122,30 @@ export default function Edit() {
           <Typography component="h1" variant="h5">
             
           </Typography>
+          <CollapsibleTable orderDetails={beforeOrderDetailsProducts}/>
           <Box component="form" onSubmit={()=>{}} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Mã giảm giá"
+              name="discountCode"
+              type="text"
+              value={beforePrderDetailsDiscountCode}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Giảm giá"
+              type="text"
+              value={beforeOrderDetailsDiscountPayment}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Tổng tiền"
+              type="text"
+              value={beforeOrderDetailsTotalBill}
+            />
             <TextField
               margin="normal"
               fullWidth
@@ -186,14 +204,6 @@ export default function Edit() {
               minRows="3"
               value={beforePrderDetailsNote}
             />
-            <TextField
-              margin="normal"
-              fullWidth
-              label="Mã giảm giá"
-              name="discountCode"
-              type="text"
-              value={beforePrderDetailsDiscountCode}
-            />
             {
               message &&
               <Alert severity={message.status}>{message.content}</Alert>
@@ -221,7 +231,7 @@ export default function Edit() {
             </Box>
             
           </Box>
-          <CollapsibleTable orderDetails={beforeOrderDetailsProducts}/>
+          
         </Box>
       </Container>
     </ThemeProvider>

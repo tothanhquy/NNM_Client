@@ -33,7 +33,7 @@ export default function Edit() {
   const [discountMoney, setDiscountMoney] = React.useState("");
   const [startTime, setStartTime] = React.useState("");
   const [endTime, setEndTime] = React.useState("");
-  const [productId, setProductId] = React.useState("");
+  const [productIds, setProductIds] = React.useState("");
 
   const { id } = useParams();
   const discountId = id;
@@ -94,7 +94,7 @@ export default function Edit() {
     setDiscountMoney(discount.discountMoney);
     setStartTime(GeneralMethod.convertTimestampToDateInput(discount.startTime));
     setEndTime(GeneralMethod.convertTimestampToDateInput(discount.endTime));
-    setProductId(discount.productId);
+    setProductIds(discount.productIds);
   }
 
   React.useEffect(()=>{
@@ -208,8 +208,8 @@ export default function Edit() {
               label="các sản phẩm (id) | id1;id2;id3"
               name="productIds"
               type="text"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              value={productIds}
+              onChange={(e) => setProductIds(e.target.value)}
             />
             <TextField
               margin="normal"

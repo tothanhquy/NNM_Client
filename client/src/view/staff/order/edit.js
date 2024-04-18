@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid';
 
 import OrderService from '../../../service/order.service';
 import * as GeneralMethod from '../../../common_method/general';
-import DiscountService from "../../service/discount.service";
+import DiscountService from "../../../service/discount.service";
 
 
 import * as CustomDialog from '../../component/dialog';
@@ -42,6 +42,8 @@ export default function Create() {
   const [alertDialog, setAlertDialog] = React.useState("");
   const [openConvertDialog, setOpenConvertDialog] = React.useState(false);
 
+  const discountCodeRef = React.useRef(null);
+
   const [orderDetailsUser,setOrderDetailsUser ] = React.useState(null);
   const [orderDetailsTime,setOrderDetailsTime ] = React.useState(null);
   const [orderDetailsSdt,setOrderDetailsSdt ] = React.useState(null);
@@ -53,9 +55,9 @@ export default function Create() {
   const [orderDetailsStatus,setOrderDetailsStatus ] = React.useState("canceled");
   const [orderDetailsProducts,setOrderDetailsProducts ] = React.useState([]);
 
-  const orderDetailsOldDiscountCode = React.useRef(null);
-  const orderDetailsOldDiscountPayment = React.useRef(null);
-  const orderDetailsOldTotalBill = React.useRef(null);
+  const [orderDetailsOldDiscountCode, setOrderDetailsOldDiscountCode]= React.useState(null);
+  const [orderDetailsOldDiscountPayment, setOrderDetailsOldDiscountPayment]= React.useState(null);
+  const [orderDetailsOldTotalBill, setOrderDetailsOldTotalBill] = React.useState(null);
 
   const [editAble,setEditAble] = React.useState(true);
   
@@ -66,7 +68,7 @@ export default function Create() {
     if(discount==null) return 0;
     let discountPayment = 0;
     for(let i=0; i<orderDetailsProducts.length; i++){
-      discountPayment += getDiscountPercent(discount,orderDetailsProducts[i].productId)*orderDetailsProducts[i].price*orderDetailsProducts[i].number;
+      discountPayment += parseInt(getDiscountPercent(discount,orderDetailsProducts[i].productId)*orderDetailsProducts[i].price*orderDetailsProducts[i].number/100);
     }
     return discountPayment;
   }
@@ -74,18 +76,19 @@ export default function Create() {
   const getCheckDiscount = (discountCode) => {
     DiscountService.getDiscountByCode(discountCode)
     .then((res) => {
-       if(res.status ==='success'){
-          if(res.data.startTime>Date.now()||res.data.endTime<Date.now()){
-            setDiscountMessage({status:"warning",message:"Mã đã ngoài thời gian hợp lệ"});
-          }else{
-            setDiscount(res.data);
-           setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
-          }
-       }else{
-          setDiscountMessage({status:"warning",message:res.message});
-       }
+      console.log(res);
+      if(res.status ==='success'){
+        if(res.data.startTime>Date.now()||res.data.endTime<Date.now()){
+          setDiscountMessage({status:"warning",content:"Mã đã ngoài thời gian hợp lệ"});
+        }else{
+          setDiscount(res.data);
+         setDiscountMessage({status:"info",content:"Mã giảm giá hợp lệ"});
+        }
+     }else{
+        setDiscountMessage({status:"warning",content:res.message});
+     }
      });
-     setOrderDetailsDiscountCode(discountCode);
+     discountCodeRef.current=discountCode;
   };
 
   const addProductHandle = function(productId,name,size,price,number){
@@ -147,26 +150,19 @@ export default function Create() {
     setOrderDetailsTableNumber(details.numberTable);
     setOrderDetailsIsTakeAway(details.isTakeAway);
     setOrderDetailsNote(details.note);
-    setOrderDetailsUser(details.userId);
+    setOrderDetailsUser(details.staff);
     // setOrderDetailsDiscountPayment(details.discountPayment);
-    setOrderDetailsTime(GeneralMethod.convertTimeToDateTime(details.time));
+    setOrderDetailsTime(GeneralMethod.convertTimeToDateTime(details.editTime));
     setOrderDetailsStatus(details.status);
-    orderDetailsOldDiscountCode.current = details.discountCode;
-    orderDetailsOldDiscountPayment.current = details.discountPayment;
-    orderDetailsOldTotalBill.current = details.totalBill;
+    setOrderDetailsOldDiscountCode(details.discountCode);
+    setOrderDetailsOldDiscountPayment(details.discountPayment);
+    setOrderDetailsOldTotalBill(details.totalBill);
     setOrderDetailsDiscountCode(details.discountCode);
+    getCheckDiscount(details.discountCode);
     if(details.status ==="waiting"||details.status ==="preparing"||details.status ==="completed"){
       setEditAble(true);
     }
-    OrderService.getOrderDetailsProducts(details.orderId).then((res) => {
-        if(res.status === 'success'){
-          //convert
-          // console.log(res.data);
-          setOrderDetailsProducts(res.data);
-        }else{
-          setAlertDialog(res.message);
-        }
-    });
+    setOrderDetailsProducts(details.products);
   }
 
   React.useEffect(()=>{
@@ -258,7 +254,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Số điện thoại"
               name="sdt"
               type="text"
@@ -268,7 +263,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Số bàn"
               name="numberTable"
               type="number"
@@ -293,7 +287,6 @@ export default function Create() {
             <TextField
               margin="normal"
               fullWidth
-              required
               label="Ghi chú"
               name="note"
               type="text"
@@ -307,21 +300,21 @@ export default function Create() {
               fullWidth
               label="Mã giảm giá cũ"
               type="text"
-              inputRef={orderDetailsOldDiscountCode}
+              value={orderDetailsOldDiscountCode}
             />
             <TextField
               margin="normal"
               fullWidth
               label="Giảm giá cũ"
               type="text"
-              inputRef={orderDetailsOldDiscountPayment}
+              value={orderDetailsOldDiscountPayment}
             />
             <TextField
               margin="normal"
               fullWidth
               label="Tổng bill cũ"
               type="text"
-              inputRef={orderDetailsOldTotalBill}
+              value={orderDetailsOldTotalBill}
             />
             {
               discountMessage &&

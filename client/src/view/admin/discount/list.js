@@ -213,7 +213,7 @@ export default function CustomPaginationActionsTable() {
                 {row.name}
               </TableCell>
               <TableCell >
-                {row.productId}
+                {row.productIds}
               </TableCell>
               <TableCell >
                 {GeneralMethod.convertTimeToDate(row.startTime)}

@@ -30,7 +30,7 @@ class ProductService{
             "sizes":sizes
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}`,body);
+        return await API.postWithFile(`${SERVICE_PATH}`,body);
     }
     //role: admin
     static async  deleteProduct(id){
@@ -45,7 +45,7 @@ class ProductService{
             "sizes":sizes
         }
         // return new Response("success", 200,"",{newId:3});
-        return await API.post(`${SERVICE_PATH}/${id}`,body);
+        return await API.postWithFile(`${SERVICE_PATH}/${id}`,body);
     }
     
     static async getProduct(id){
