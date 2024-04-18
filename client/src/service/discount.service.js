@@ -91,6 +91,12 @@ class DiscountService{
         }
         return await API.get(`${SERVICE_PATH}/getDiscountByCode`,params);
     }
-    
+    static async importManyDiscount(file){
+        let body = {
+            "file":file
+        }
+        // return new Response("success", 200,"",{newId:3});
+        return await API.postWithFile(`${SERVICE_PATH}/importExcelData2MongoDB`,body);
+    }
 }
 export default DiscountService;

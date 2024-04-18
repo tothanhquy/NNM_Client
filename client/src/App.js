@@ -8,6 +8,7 @@ import AdminProductList from './view/admin/product/list';
 import AdminProductCreate from './view/admin/product/create';
 import AdminProductEdit from './view/admin/product/edit';
 import AdminDiscountList from './view/admin/discount/list';
+import AdminDiscountImport from './view/admin/discount/import';
 import AdminDiscountCreate from './view/admin/discount/create';
 import AdminDiscountEdit from './view/admin/discount/edit';
 import AdminTableList from './view/admin/table/list';
@@ -38,6 +39,7 @@ function App() {
           </Route>
           <Route path="discount" > 
             <Route path="create" element={<AdminDiscountCreate/>} />
+            <Route path="import" element={<AdminDiscountImport/>} />
             <Route path="edit/:id" element={<AdminDiscountEdit/>} />
             <Route index element={<AdminDiscountList/>} />
           </Route>

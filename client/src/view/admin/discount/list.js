@@ -171,6 +171,7 @@ export default function CustomPaginationActionsTable() {
       </Dialog>
       <box style={{display:'flex',flexDirection:'row'}}>
         <Button size="small" variant="contained" href={"/admin/discount/create"}>Tạo mới Discount</Button>
+        
         <Box style={{margin:'10px 0 0 20px',display:'flex',flexDirection:'row',alignItems:'center'}} component="form" onSubmit={handleSearch}>
           <TextField size="small" 
           label="Search..."
@@ -181,6 +182,8 @@ export default function CustomPaginationActionsTable() {
             <SearchIcon />
           </IconButton>
         </Box>
+        <Button size="small" variant="contained" href={"/admin/discount/import"}>Import Excel</Button>
+
       </box>
       
       <Table sx={{ minWidth: 300 }} aria-label="custom pagination table">
