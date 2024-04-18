@@ -1,3 +1,12 @@
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "./style/flexboxgrid.min.css";
+import './style/index.css';
+import { Helmet } from "react-helmet";
+
+// Sections
+import TopNavbar from "./components/Nav/TopNavbar";
+import Header from "./components/Sections/Header";
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
@@ -13,19 +22,24 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-import BeforeOrderService from '../../../service/beforeorder.service';
-import * as GeneralMethod from '../../../common_method/general';
+import BeforeOrderService from '../../service/beforeorder.service';
+import * as GeneralMethod from '../../common_method/general';
 
-import * as CustomDialog from '../../component/dialog';
-import CollapsibleTable from '../../component/CollapsibleTableProducts';
-// TODO remove, this demo shouldn't need to reset the theme.
+import * as CustomDialog from '../component/dialog';
+import CollapsibleTable from '../component/CollapsibleTableProducts';
 
 const defaultTheme = createTheme();
 
-export default function Edit() {
+export default function Landing() {
+  const getNavOne = React.useMemo(() => {
+    return (
+      <TopNavbar />
+    );
+  }, []);
+
+
   const [message, setMessage] = React.useState(null);
   const [alertDialog, setAlertDialog] = React.useState("");
-  const [openConvertDialog, setOpenConvertDialog] = React.useState(false);
 
   const [beforePrderDetailsUser,setBeforePrderDetailsUser ] = React.useState(null);
   const [beforePrderDetailsTime,setBeforePrderDetailsTime ] = React.useState(null);
@@ -40,34 +54,6 @@ export default function Edit() {
   
 
   const { id } = useParams();
-
-  const handleChangeStatus = (event) => {
-    event.preventDefault();
-
-    let status = event.target.value;
-    
-    BeforeOrderService.updateBeforeOrderStatus(id, status)
-    .then(res=>{
-      if(res.status === 'success'){
-        setBeforePrderDetailsStatus(status);
-        setAlertDialog("Thay đổi trạng thái thành công");
-      }else{
-        setAlertDialog(res.message);
-      }
-    })
-  };
-
-  const handleSubmitConvert = async (event) => {
-    event.preventDefault();
-
-    let res = await BeforeOrderService.convertOrder(id);
-    if(res.status === 'success'){
-      setAlertDialog("Convert thành công");
-      setOpenConvertDialog(false)
-    }else{
-      setAlertDialog(res.message);
-    }
-  };
 
   const setBeforeOrderDetails = function(details){
     setBeforePrderDetailsUser(details.user);
@@ -84,7 +70,7 @@ export default function Edit() {
 
   React.useEffect(()=>{
     
-    BeforeOrderService.getBeforeOrderDetails(id).then((res) => {
+    BeforeOrderService.userGetDetails(id).then((res) => {
         if(res.status === 'success'){
           //convert
           // console.log(res.data);
@@ -97,9 +83,16 @@ export default function Edit() {
   },[]);
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xm">
-        <Button size="small" variant="outline" href={"/staff/before-order"}>Quay lại danh sách</Button>
+    <>
+	<Helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Khula:wght@400;600;800&display=swap" rel="stylesheet" />
+      </Helmet>
+      {getNavOne}
+      <ThemeProvider theme={defaultTheme}>
+        <Container sx={{maxWidth:"1000px", margin:"100px auto 0 auto"}} component="main" maxWidth="xm">
+        <Button size="small" variant="outline" href={"/beforeorders"}>Quay lại danh sách</Button>
 
         {
           alertDialog!== ""?
@@ -172,7 +165,6 @@ export default function Edit() {
                 label="Trạng thái"
                 name="status"
                 value={beforePrderDetailsStatus}
-                onChange={handleChangeStatus}
               >
                 <MenuItem value={"waiting"}>Đang chờ</MenuItem>
                 <MenuItem value={"handled"}>Đã xử lý</MenuItem>
@@ -209,25 +201,7 @@ export default function Edit() {
               <Alert severity={message.status}>{message.content}</Alert>
             }
             <Box style={{display:'flex',justifyContent: 'space-between', flexDirection:'row'}}>
-              <Button size="small" variant="outline" href={"/staff/before-order"}>Quay lại danh sách</Button>
-              {openConvertDialog&&
-              <CustomDialog.AskDialog
-                open={openConvertDialog}
-                title="Bạn thực sự muốn"
-                content={"Bạn có chắc chắn muốn convert đơn này thành đơn hàng?"}
-                onClose={()=>{setOpenConvertDialog(false)}}
-                onHandle={handleSubmitConvert}
-              />
-              }
-              <Button
-                onClick={()=>{setOpenConvertDialog(true)}}
-                type="button"
-                align="right"
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Convert 
-              </Button>
+              <Button size="small" variant="outline" href={"/beforeorders"}>Quay lại danh sách</Button>
             </Box>
             
           </Box>
@@ -235,6 +209,7 @@ export default function Edit() {
         </Box>
       </Container>
     </ThemeProvider>
+    </>
   );
 }
 

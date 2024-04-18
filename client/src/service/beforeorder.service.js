@@ -86,6 +86,9 @@ class BeforeOrderService{
     static async getBeforeOrdersOfUser(){
         return await API.get(`${SERVICE_PATH}/getBeforeOrdersOfUser`,{});
     }
+    static async userGetDetails(id){
+        return await API.get(`${SERVICE_PATH}/userGetDetails/${id}`,{});
+    }
     //role: staff
     static async updateBeforeOrderStatus(id,status="waiting/handled"){
         let body = {

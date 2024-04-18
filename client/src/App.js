@@ -26,6 +26,8 @@ import StaffOrderCreate from './view/staff/order/create';
 
 import Home from './view/guest/home';
 import Cart from './view/guest/cart';
+import GuestBeforeOrders from './view/guest/beforeorders';
+import GuestBeforeOrderDetails from './view/guest/beforeorder_datails';
 
 function App() {
   return (
@@ -73,6 +75,8 @@ function App() {
         <Route path="/">
           <Route index element={<Home/>} />
           <Route path="cart" element={<Cart/>} />
+          <Route path="beforeorders" element={<GuestBeforeOrders/>} />
+          <Route path="beforeorder_details/:id" element={<GuestBeforeOrderDetails/>} />
         </Route>
       </Routes>
     </BrowserRouter>

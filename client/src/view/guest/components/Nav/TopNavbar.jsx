@@ -103,10 +103,15 @@ export default function TopNavbar() {
                 <a href="/login" style={{ padding: "10px 30px 10px 0" }}>
                   Log in
                 </a>
-                :
-                <Button onClick={logout}>
-                  Log out
-                </Button>
+                :<>
+                  <Button href="/beforeorders" >
+                    Lịch sử đặt hàng
+                  </Button>
+                  <Button onClick={logout}>
+                    Log out
+                  </Button>
+                  
+                </>
               }
               
             </li>
