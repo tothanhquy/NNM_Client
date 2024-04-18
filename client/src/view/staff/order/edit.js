@@ -75,8 +75,12 @@ export default function Create() {
     DiscountService.getDiscountByCode(discountCode)
     .then((res) => {
        if(res.status ==='success'){
-          setDiscount(res.data);
-         setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+          if(res.data.startTime>Date.now()||res.data.endTime<Date.now()){
+            setDiscountMessage({status:"warning",message:"Mã đã ngoài thời gian hợp lệ"});
+          }else{
+            setDiscount(res.data);
+           setDiscountMessage({status:"info",message:"Mã giảm giá hợp lệ"});
+          }
        }else{
           setDiscountMessage({status:"warning",message:res.message});
        }
