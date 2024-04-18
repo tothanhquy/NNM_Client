@@ -47,7 +47,8 @@ export default function Cart() {
   const numberTableRef = useRef(null);
   const noteRef = useRef(null);
   const isTakeAwayRef = useRef(null);
-  const discountCodeRef = useRef(null);
+  // const discountCodeRef = useRef(null);
+  const [discountCodeS,setDiscountCode] = React.useState("");
   const [cartItems,setCartItems] = React.useState([]);
   const [alertDialog,setAlertDialog] = React.useState(null);
   const [submitCreateDialog,setSubmitCreateDialog] = React.useState(null);
@@ -79,7 +80,7 @@ export default function Cart() {
         setDiscountMessage({status:"warning",content:res.message});
      }
      });
-     discountCodeRef.current=discountCode;
+     setDiscountCode(discountCode);
   };
 
   const getProductPriceAndName = function(id,size){
@@ -137,7 +138,7 @@ export default function Cart() {
     let note = noteRef.current.value;
     let isTakeAway = isTakeAwayRef.current.value;
     let numberTable = numberTableRef.current.value;
-    let discountCode = discountCodeRef.current;
+    let discountCode = discountCodeS;
 
     let products = [];
     cartItems.forEach(product => {
@@ -290,7 +291,7 @@ export default function Cart() {
                   label="Mã giảm giá"
                   name="discountCode"
                   type="text"
-                  inputRef ={discountCodeRef}
+                  value={discountCodeS}
                   onChange={(e)=>{getCheckDiscount(e.target.value)}}
                 />
                 <TextField

@@ -67,7 +67,7 @@ class DiscountService{
         return await API.delete(`${SERVICE_PATH}/${id}`,{});
     }
     //role: admin
-    static async updateDiscount(id,code,name, description, discountPercent, discountMoney,startTime,endTime,productIds="1;5"){
+    static async updateDiscount(id,name,code, description, discountPercent, discountMoney,startTime,endTime,productIds="1;5"){
         let body = {
             "name":name,
             "description":description,

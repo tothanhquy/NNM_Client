@@ -325,7 +325,7 @@ export default function CustomPaginationActionsTable() {
             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : rows
           ).map((row) => (
-            <TableRow key={row.name}>
+            <TableRow key={row.orderId}>
               <TableCell component="th" scope="row">
                 <Link href={`/staff/order/edit/${row.orderId}`}>#{row.orderId}</Link>
               </TableCell>

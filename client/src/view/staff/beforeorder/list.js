@@ -348,7 +348,7 @@ export default function CustomPaginationActionsTable() {
                     id="demo-simple-select"
                     label="status"
                     value={row.status}
-                    onChange={(e)=>{changeStatusOfBeforeOrder(row.beforeOrderId,e.target.value)}}
+                    onChange={(e)=>{changeStatusOfBeforeOrder(row.orderId,e.target.value)}}
                   >
                     <MenuItem value={"waiting"}>Đang chờ</MenuItem>
                     <MenuItem value={"handled"}>Đã xử lý</MenuItem>
@@ -373,7 +373,7 @@ export default function CustomPaginationActionsTable() {
                 {row.discountCode}
               </TableCell>
               <TableCell style={{ width: 160 }} align='center'>
-                <Button onClick={()=>{setConvertDialog(row.beforeOrderId)}} >Convert</Button>
+                <Button onClick={()=>{setConvertDialog(row.orderId)}} >Convert</Button>
               </TableCell>
             </TableRow>
           ))}
